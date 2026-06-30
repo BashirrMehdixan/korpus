@@ -1,8 +1,8 @@
 <template>
-    <div class="mx-auto max-w-7xl">
+    <div class="mx-auto max-w-5xl">
         <div class="mb-8">
             <Link
-                :href="route('front.menus.index')"
+                :href="route(rn('menus.index'))"
                 class="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-[#2B4CDE] dark:text-gray-400 dark:hover:text-sky-400"
             >
                 <RiArrowLeftSLine class="h-4 w-4" />
@@ -28,27 +28,6 @@
                 class="space-y-6 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm lg:col-span-2 dark:border-gray-800 dark:bg-gray-900"
             >
                 <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-                    <div class="md:col-span-2">
-                        <label
-                            class="mb-2 block text-sm font-semibold text-gray-800 dark:text-gray-200"
-                        >
-                            Üst Menyu (Valideyn)
-                        </label>
-                        <select
-                            v-model="form.parent_id"
-                            class="w-full appearance-none rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm transition-all outline-none focus:border-[#2B4CDE] focus:ring-2 focus:ring-[#2B4CDE]/10 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-100 dark:focus:border-sky-500 dark:focus:ring-sky-500/10"
-                        >
-                            <option :value="null">Ana Menyu (Heç biri)</option>
-                            <option
-                                v-for="root in rootMenus"
-                                :key="root.id"
-                                :value="root.id"
-                            >
-                                {{ root.title }}
-                            </option>
-                        </select>
-                    </div>
-
                     <div>
                         <label
                             class="mb-2 block text-sm font-semibold text-gray-800 dark:text-gray-200"
@@ -82,7 +61,7 @@
                             <input
                                 v-model="form.route"
                                 class="w-full rounded-xl border border-gray-200 py-3 pr-4 pl-11 text-sm transition-all outline-none focus:border-[#2B4CDE] focus:ring-2 focus:ring-[#2B4CDE]/10 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-100 dark:focus:border-sky-500 dark:focus:ring-sky-500/10"
-                                placeholder="front.index"
+                                placeholder="index / menus.index"
                             />
                         </div>
                     </div>
@@ -179,21 +158,27 @@
 
 <script lang="ts" setup>
 import { Link, router } from '@inertiajs/vue3';
-import { RiArrowLeftSLine, RiCommandLine, RiLink, RiTranslate2 } from '@remixicon/vue';
+import {
+    RiArrowLeftSLine,
+    RiCommandLine,
+    RiLink,
+    RiTranslate2,
+} from '@remixicon/vue';
 import { computed, reactive } from 'vue';
 import { route } from 'ziggy-js';
+import { useLocale } from '@/composables/useLocale';
+
+const { rn } = useLocale();
 
 const props = defineProps<{
     menu?: {
         id: number;
-        parent_id: number | null;
         icon: string;
         route: string;
         order: number;
         status: boolean;
         translations: Record<string, string>;
     };
-    rootMenus: Array<{ id: number; title: string }>;
 }>();
 
 const locales = { az: 'AZ', en: 'EN', ru: 'RU' } as const;
@@ -201,8 +186,8 @@ type LocaleKeys = keyof typeof locales;
 
 const isEdit = computed(() => !!props.menu);
 
+// Reaktiv form strukturu
 const form = reactive({
-    parent_id: props.menu?.parent_id ?? null,
     icon: props.menu?.icon ?? '',
     route: props.menu?.route ?? '',
     order: props.menu?.order ?? 0,
@@ -218,9 +203,9 @@ const form = reactive({
 
 function submit() {
     if (isEdit.value) {
-        router.put(route('front.menus.update', props.menu!.id), form);
+        router.put(route(rn('menus.update'), props.menu!.id), form);
     } else {
-        router.post(route('front.menus.store'), form);
+        router.post(route(rn('menus.store')), form);
     }
 }
 </script>

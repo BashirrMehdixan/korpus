@@ -1,6 +1,5 @@
 <template>
     <div class="mx-auto max-w-6xl">
-        <!-- Üst Başlıq və Yeni Düyməsi -->
         <div
             class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
         >
@@ -18,13 +17,11 @@
                     :href="route('front.menus.create')"
                     class="inline-flex items-center gap-2 rounded-xl bg-[#2B4CDE] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/10 transition-all hover:bg-[#1a3bb8] hover:shadow-lg hover:shadow-blue-500/20 active:scale-[0.98] dark:bg-sky-500 dark:shadow-sky-500/5 dark:hover:bg-sky-600"
                 >
-                    <RiAddLine class="h-4 w-4" />
+                    <RiAddLine class="size-4" />
                     Yeni Menu
                 </Link>
             </div>
         </div>
-
-        <!-- Cədvəl Kartı -->
         <div
             class="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
         >
@@ -167,9 +164,17 @@
 
 <script lang="ts" setup>
 import { Link, router } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
 import * as RemixIcons from '@remixicon/vue';
-import { RiAddLine, RiDeleteBin6Line, RiEditLine, RiQuestionLine } from '@remixicon/vue';
+import {
+    RiAddLine,
+    RiDeleteBin6Line,
+    RiEditLine,
+    RiQuestionLine,
+} from '@remixicon/vue';
+import { route } from 'ziggy-js';
+import { useLocale } from '@/composables/useLocale';
+
+const { rn } = useLocale();
 
 defineProps<{
     menus: Array<{
@@ -180,7 +185,6 @@ defineProps<{
     }>;
 }>();
 
-// Verilən string adına görə müvafiq RemixIcon komponentini qaytaran funksiya
 function getIconComponent(iconName: string) {
     if (iconName && iconName in RemixIcons) {
         return RemixIcons[iconName as keyof typeof RemixIcons];
@@ -194,7 +198,7 @@ function remove(id: number) {
             'Silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.',
         )
     ) {
-        router.delete(route('front.menus.destroy', id));
+        router.delete(route(rn('menus.destroy'), id));
     }
 }
 </script>

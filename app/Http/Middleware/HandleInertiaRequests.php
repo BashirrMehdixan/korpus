@@ -19,7 +19,6 @@ class HandleInertiaRequests extends Middleware
     {
         // N+1 probleminin qarşısını almaq üçün translations ilə birlikdə çəkirik
         $menus = Menu::root()
-            ->where('status', true)
             ->with(['translations', 'children.translations'])
             ->get()
             ->map(function ($menu) {

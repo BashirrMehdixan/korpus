@@ -75,9 +75,9 @@ class MenuController extends Controller
         ]);
 
         $payload = [
-            'parent_id' => $data['parent_id'],
-            'icon' => $data['icon'],
-            'route' => $data['route'],
+            'parent_id' => $data['parent_id'] ?? null,
+            'icon' => $data['icon'] ?? null,
+            'route' => $data['route'] ?? null,
             'order' => $data['order'] ?? 0,
             'status' => $data['status'] ?? false,
         ];
@@ -95,7 +95,7 @@ class MenuController extends Controller
             );
         }
 
-        return redirect()->route('front.menus.index');
+        return redirect()->route($this->localRoute('menus.index'));
     }
 
     public function create(): Response
@@ -116,6 +116,12 @@ class MenuController extends Controller
     public function destroy(Menu $menu): RedirectResponse
     {
         $menu->delete();
-        return redirect()->route('front.menus.index');
+        return redirect()->route($this->localRoute('menus.index'));
+    }
+
+    protected function localRoute(string $name): string
+    {
+        $prefix = app()->getLocale() === 'az' ? 'front' : app()->getLocale();
+        return "{$prefix}.{$name}";
     }
 }

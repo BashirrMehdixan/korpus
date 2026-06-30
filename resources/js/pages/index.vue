@@ -1,14 +1,8 @@
 <template>
     <div>
         <div class="mb-8">
-            <h1
-                class="mb-1 text-xl font-semibold text-gray-900 dark:text-white"
-            >
-                Axşamınız xeyir, Jalə!
-            </h1>
-            <p class="text-sm text-gray-400 dark:text-gray-500">
-                Bu gün nə etmək istərdiniz?
-            </p>
+            <h1 class="mb-1 text-xl font-semibold text-gray-900 dark:text-white">{{ t('Axşamınız xeyir, Jalə!') }}</h1>
+            <p class="text-sm text-gray-400 dark:text-gray-500">{{ t('Bu gün nə etmək istərdiniz?') }}</p>
         </div>
 
         <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -17,19 +11,11 @@
                 :key="card.title"
                 class="group cursor-pointer rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-100 transition-all hover:shadow-md dark:bg-gray-800 dark:ring-gray-700 dark:hover:bg-gray-700/50"
             >
-                <div
-                    class="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-500 transition-colors dark:bg-gray-700 dark:text-gray-400"
-                >
+                <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-500 transition-colors dark:bg-gray-700 dark:text-gray-400">
                     <component :is="card.icon" class="h-5 w-5" />
                 </div>
-                <h3
-                    class="mb-1 text-sm font-medium text-gray-900 dark:text-gray-100"
-                >
-                    {{ card.title }}
-                </h3>
-                <p class="text-sm text-gray-400 dark:text-gray-500">
-                    {{ card.description }}
-                </p>
+                <h3 class="mb-1 text-sm font-medium text-gray-900 dark:text-gray-100">{{ card.title }}</h3>
+                <p class="text-sm text-gray-400 dark:text-gray-500">{{ card.description }}</p>
             </div>
         </div>
     </div>
@@ -44,6 +30,9 @@ import {
     RiUser3Line,
 } from '@remixicon/vue';
 import { shallowRef } from 'vue';
+import { useLocale } from '@/composables/useLocale';
+
+const { t } = useLocale();
 
 const dashboardCards = shallowRef([
     {

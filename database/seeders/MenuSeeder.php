@@ -13,7 +13,7 @@ class MenuSeeder extends Seeder
         $menus = [
             [
                 'icon' => 'RiLayoutGridFill',
-                'route' => 'front.index',
+                'route' => 'index',
                 'order' => 0,
                 'translations' => [
                     'az' => 'Mənim Panelim',

@@ -10,7 +10,7 @@ class MenuController extends Controller
 {
     public function index(): JsonResponse
     {
-        $locale = request('locale', app()->getLocale());
+        $locale = app()->getLocale();
 
         $menus = Menu::root()->get()->map(function (Menu $menu) use ($locale) {
             return $this->formatMenu($menu, $locale);
