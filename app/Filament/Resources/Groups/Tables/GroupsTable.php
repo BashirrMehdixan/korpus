@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Users\Tables;
+namespace App\Filament\Resources\Groups\Tables;
 
-use App\Models\User;
+use App\Models\Group;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -13,35 +13,32 @@ use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
-class UsersTable
+class GroupsTable
 {
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('index')->label('Sıra nömrəsi')->rowIndex(),
-                TextColumn::make('surname')->label('S.A.A')
-                    ->getStateUsing(fn(User $record) => "$record->surname $record->name $record->patronymic")
-                    ->searchable(['surname', 'name', 'patronymic']),
-                TextColumn::make('username')->label('İstifadəçi adı')->searchable(),
-                TextColumn::make('phone')->label('Əlaqə nömrəsi')->searchable(),
-                TextColumn::make('email')->label('E-poçt')->searchable(),
-                TextColumn::make('registration_date')->label('Qeydiyyat tarixi')->dateTime(),
+                TextColumn::make('index')->label('№')->rowIndex(),
+                TextColumn::make('name')->label('Ad')->searchable(),
+                TextColumn::make('slug')->label('Slug')->searchable(),
+                TextColumn::make('course.name')->label('Kurs')->searchable(),
+                TextColumn::make('teacher.surname')->label('Müəllim')
+                    ->getStateUsing(fn(Group $record) => "$record->teacher->surname $record->teacher->name"),
+                TextColumn::make('start_date')->label('Başlama tarixi')->date(),
+                TextColumn::make('end_date')->label('Bitmə tarixi')->date(),
+                TextColumn::make('payment_method')->label('Ödəniş üsulu')
+                    ->getStateUsing(fn(Group $record) => $record->payment_method === 1 ? 'Birdəfəlik' : 'Aylıq'),
                 TextColumn::make('status')
                     ->label('Aktivlik')
-                    ->getStateUsing(fn(User $record) => $record->status ? 'Aktiv' : 'Passiv')
+                    ->getStateUsing(fn(Group $record) => $record->status ? 'Aktiv' : 'Passiv')
                     ->badge()
                     ->color(fn(string $state) => $state === 'Aktiv' ? 'success' : 'danger'),
             ])
             ->filters([
                 TrashedFilter::make(),
-                SelectFilter::make('roles')
-                    ->relationship('roles', 'name')
-                    ->multiple()
-                    ->preload(),
             ])
             ->recordActions([
                 EditAction::make(),
