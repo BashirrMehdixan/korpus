@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Teachers;
 
 use App\Filament\Resources\Teachers\RelationManagers\GroupsTeachingRelationManager;
-use App\Filament\Resources\Teachers\RelationManagers\PaymentsRelationManager;
 use App\Filament\Resources\Teachers\RelationManagers\TeacherPaymentTypesRelationManager;
 use App\Filament\Resources\Teachers\Schemas\TeacherInfolist;
 use App\Filament\Resources\Users\Schemas\UserForm;
@@ -47,7 +46,6 @@ class TeacherResource extends Resource
     {
         return [
             GroupsTeachingRelationManager::class,
-            PaymentsRelationManager::class,
             TeacherPaymentTypesRelationManager::class,
         ];
     }

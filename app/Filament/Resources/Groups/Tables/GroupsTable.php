@@ -31,6 +31,9 @@ class GroupsTable
                 }),
                 TextColumn::make('payment_method')->label('Ödəniş üsulu')
                     ->getStateUsing(fn(Group $record) => $record->payment_method === 1 ? 'Birdəfəlik' : 'Aylıq'),
+                TextColumn::make('amount')->label('Məbləğ (AZN)')
+                    ->getStateUsing(fn(Group $record) => $record->payment_method === 1 ? $record->fixed_amount : $record->monthly_amount)
+                    ->money('AZN'),
                 TextColumn::make('status')
                     ->label('Aktivlik')
                     ->getStateUsing(fn(Group $record) => $record->status ? 'Aktiv' : 'Passiv')

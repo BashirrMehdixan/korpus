@@ -11,7 +11,6 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Infolists\Components\TextEntry;
@@ -60,12 +59,6 @@ class TeacherPaymentTypesRelationManager extends RelationManager
                     ->numeric()
                     ->visible(fn($get) => $get('type') === 3)
                     ->required(fn($get) => $get('type') === 3),
-                Select::make('group_id')
-                    ->label('Qrup')
-                    ->relationship('group', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->nullable(),
                 ToggleButtons::make('status')
                     ->label('Aktivlik')
                     ->boolean()

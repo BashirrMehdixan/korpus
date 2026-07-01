@@ -11,31 +11,43 @@ class PaymentGenerationService
 {
     public function generateForGroup(Group $group, array $studentIds): void
     {
-        if ($group->payment_method !== 2 || !$group->monthly_amount) {
-            return;
-        }
-
-        $start = Carbon::parse($group->start_date);
-        $end = $group->end_date ? Carbon::parse($group->end_date) : $start->copy()->addMonth();
-        $months = $start->diffInMonths($end) + 1;
-
         foreach ($studentIds as $studentId) {
-            for ($i = 0; $i < $months; $i++) {
-                $date = $start->copy()->addMonthsNoOverflow($i);
-
-                $dueDate = $date->copy()->addMonth()->endOfMonth();
+            if ($group->payment_method === 1) {
+                if (!$group->fixed_amount) {
+                    continue;
+                }
 
                 Payment::firstOrCreate([
                     'group_id' => $group->id,
                     'student_id' => $studentId,
-                    'month' => $date->month,
-                    'year' => $date->year,
+                    'month' => null,
+                    'year' => null,
                 ], [
-                    'amount' => $group->monthly_amount,
+                    'amount' => $group->fixed_amount,
                     'status' => 'pending',
                     'paid_at' => null,
-                    'due_date' => $dueDate,
+                    'due_date' => $group->start_date ? Carbon::parse($group->start_date)->addMonth()->endOfMonth() : null,
                 ]);
+            } elseif ($group->payment_method === 2 && $group->monthly_amount) {
+                $start = Carbon::parse($group->start_date);
+                $end = $group->end_date ? Carbon::parse($group->end_date) : $start->copy()->addMonth();
+                $months = $start->diffInMonths($end) + 1;
+
+                for ($i = 0; $i < $months; $i++) {
+                    $date = $start->copy()->addMonthsNoOverflow($i);
+
+                    Payment::firstOrCreate([
+                        'group_id' => $group->id,
+                        'student_id' => $studentId,
+                        'month' => $date->month,
+                        'year' => $date->year,
+                    ], [
+                        'amount' => $group->monthly_amount,
+                        'status' => 'pending',
+                        'paid_at' => null,
+                        'due_date' => $date->copy()->addMonth()->endOfMonth(),
+                    ]);
+                }
             }
         }
     }

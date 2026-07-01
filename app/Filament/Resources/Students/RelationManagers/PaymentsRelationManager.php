@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Students\RelationManagers;
 
 use App\Models\Payment;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -33,8 +34,16 @@ class PaymentsRelationManager extends RelationManager
             })
             ->columns([
                 TextColumn::make('group.name')
-                    ->label('Qrup')
-                    ->label('Aylıq məbləğ')
+                    ->label('Qrup'),
+                TextColumn::make('month')
+                    ->label('Ay')
+                    ->formatStateUsing(fn($state) => $state ? Carbon::create()->month($state)->translatedFormat('F') : 'Birdəfəlik')
+                    ->visible(fn($record) => $record?->month !== null || !$record),
+                TextColumn::make('year')
+                    ->label('İl')
+                    ->visible(fn($record) => $record?->year !== null || !$record),
+                TextColumn::make('amount')
+                    ->label('Məbləğ (AZN)')
                     ->money('AZN'),
                 TextColumn::make('paid_amount')
                     ->label('Ödənilən')
@@ -81,7 +90,7 @@ class PaymentsRelationManager extends RelationManager
                         };
                     }),
             ])
-            ->defaultSort('year', 'desc')
+            ->defaultSort('due_date', 'desc')
             ->defaultKeySort(false)
             ->filters([
                 TrashedFilter::make(),
@@ -99,12 +108,18 @@ class PaymentsRelationManager extends RelationManager
                         return !Payment::where('student_id', $record->student_id)
                             ->where('group_id', $record->group_id)
                             ->where('status', '!=', 'paid')
+                            ->where('id', '!=', $record->id)
                             ->where(function ($q) use ($record) {
-                                $q->where('year', '<', $record->year)
-                                    ->orWhere(function ($q) use ($record) {
-                                        $q->where('year', '=', $record->year)
-                                            ->where('month', '<', $record->month);
-                                    });
+                                if ($record->month !== null && $record->year !== null) {
+                                    $q->where('year', '<', $record->year)
+                                        ->orWhere(function ($q) use ($record) {
+                                            $q->where('year', '=', $record->year)
+                                                ->where('month', '<', $record->month);
+                                        });
+                                } else {
+                                    $q->where('due_date', '<', $record->due_date)
+                                        ->orWhereNull('due_date');
+                                }
                             })
                             ->exists();
                     })
@@ -128,11 +143,15 @@ class PaymentsRelationManager extends RelationManager
                             ->where('group_id', $record->group_id)
                             ->whereIn('status', ['pending', 'partial'])
                             ->where(function ($q) use ($record) {
-                                $q->where('year', '>', $record->year)
-                                    ->orWhere(function ($q) use ($record) {
-                                        $q->where('year', '=', $record->year)
-                                            ->where('month', '>=', $record->month);
-                                    });
+                                if ($record->month !== null && $record->year !== null) {
+                                    $q->where('year', '>', $record->year)
+                                        ->orWhere(function ($q) use ($record) {
+                                            $q->where('year', '=', $record->year)
+                                                ->where('month', '>=', $record->month);
+                                        });
+                                } else {
+                                    $q->whereNull('month');
+                                }
                             })
                             ->orderBy('year')
                             ->orderBy('month')

@@ -26,6 +26,10 @@ class GroupInfolist
                         TextEntry::make('payment_method')
                             ->label('Ödəniş üsulu')
                             ->getStateUsing(fn($state) => $state === 1 ? 'Birdəfəlik' : 'Aylıq'),
+                        TextEntry::make('amount')
+                            ->label('Məbləğ (AZN)')
+                            ->getStateUsing(fn($record) => $record->payment_method === 1 ? $record->fixed_amount : $record->monthly_amount)
+                            ->money('AZN'),
                         TextEntry::make('status')
                             ->label('Aktivlik')
                             ->badge()

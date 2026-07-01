@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Teachers\RelationManagers;
 
-use App\Models\Group;
+use App\Models\Course;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -12,19 +12,19 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
 
 class GroupsTeachingRelationManager extends RelationManager
 {
@@ -37,42 +37,58 @@ class GroupsTeachingRelationManager extends RelationManager
                 TextInput::make('name')
                     ->label('Name')
                     ->required()
-                    ->reactive()
-                    ->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
-
-                TextInput::make('slug')
-                    ->label('Slug')
-                    ->disabled()
-                    ->required()
-                    ->unique(Group::class, 'slug', fn($record) => $record),
+                    ->reactive(),
 
                 Select::make('course_id')
-                    ->label('Course Id')
-                    ->relationship('course', 'name')
+                    ->label('Course')
+                    ->options(fn() => Course::where('status', true)->get()->pluck('name', 'id'))
                     ->searchable()
                     ->required(),
 
                 DatePicker::make('start_date')
-                    ->label('Start Date'),
+                    ->label('Start Date')
+                    ->native(false)
+                    ->required(),
 
                 DatePicker::make('end_date')
-                    ->label('End Date'),
+                    ->label('End Date')
+                    ->native(false)
+                    ->required(),
+                Section::make('Payment Method select')->schema([
+                    ToggleButtons::make('payment_method')
+                        ->label('Ödəniş üsulu')
+                        ->options([
+                            1 => 'Birdəfəlik',
+                            2 => 'Aylıq',
+                        ])
+                        ->default(1)
+                        ->inline()
+                        ->required()
+                        ->reactive()
+                        ->afterStateUpdated(function (callable $set, $state) {
+                            if ($state === 1) {
+                                $set('monthly_amount', null);
+                            } else {
+                                $set('fixed_amount', null);
+                            }
+                        }),
+                    TextInput::make('fixed_amount')
+                        ->label('Birdəfəlik məbləğ (AZN)')
+                        ->numeric()
+                        ->visible(fn($get) => $get('payment_method') === 1)
+                        ->required(fn($get) => $get('payment_method') === 1),
+                    TextInput::make('monthly_amount')
+                        ->label('Aylıq məbləğ (AZN)')
+                        ->numeric()
+                        ->visible(fn($get) => $get('payment_method') === 2)
+                        ->required(fn($get) => $get('payment_method') === 2),
+                ])->columnSpanFull(),
 
-                TextInput::make('payment_method')
-                    ->label('Payment Method')
-                    ->required()
-                    ->integer(),
-
-                Checkbox::make('status')
-                    ->label('Status'),
-
-                TextEntry::make('created_at')
-                    ->label('Created Date')
-                    ->dateTime(),
-
-                TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
-                    ->dateTime(),
+                ToggleButtons::make('status')
+                    ->label('Status')
+                    ->grouped()
+                    ->inline()
+                    ->boolean()->default(true),
             ]);
     }
 
@@ -101,10 +117,18 @@ class GroupsTeachingRelationManager extends RelationManager
                     ->dateTime(),
 
                 TextEntry::make('payment_method')
-                    ->label('Payment Method'),
+                    ->label('Ödəniş üsulu')
+                    ->getStateUsing(fn($state) => $state === 1 ? 'Birdəfəlik' : 'Aylıq'),
+
+                TextEntry::make('amount')
+                    ->label('Məbləğ (AZN)')
+                    ->getStateUsing(fn($record) => $record->payment_method === 1 ? $record->fixed_amount : $record->monthly_amount)
+                    ->money('AZN'),
 
                 TextEntry::make('status')
-                    ->label('Status'),
+                    ->label('Aktivlik')
+                    ->badge()
+                    ->getStateUsing(fn($state) => $state ? 'Aktiv' : 'Passiv'),
 
                 TextEntry::make('created_at')
                     ->label('Created Date')
@@ -145,10 +169,19 @@ class GroupsTeachingRelationManager extends RelationManager
                     ->date(),
 
                 TextColumn::make('payment_method')
-                    ->label('Payment Method'),
+                    ->label('Ödəniş üsulu')
+                    ->getStateUsing(fn($record) => $record->payment_method === 1 ? 'Birdəfəlik' : 'Aylıq'),
+
+                TextColumn::make('amount')
+                    ->label('Məbləğ (AZN)')
+                    ->getStateUsing(fn($record) => $record->payment_method === 1 ? $record->fixed_amount : $record->monthly_amount)
+                    ->money('AZN'),
 
                 TextColumn::make('status')
-                    ->label('Status'),
+                    ->label('Aktivlik')
+                    ->getStateUsing(fn($record) => $record->status ? 'Aktiv' : 'Passiv')
+                    ->badge()
+                    ->color(fn(string $state) => $state === 'Aktiv' ? 'success' : 'danger'),
             ])
             ->filters([
                 TrashedFilter::make(),

@@ -25,6 +25,7 @@ class Group extends Model
         'end_date',
         'payment_method',
         'monthly_amount',
+        'fixed_amount',
         'status',
     ];
 
@@ -72,6 +73,7 @@ class Group extends Model
             'end_date' => 'date',
             'payment_method' => 'integer',
             'monthly_amount' => 'decimal:2',
+            'fixed_amount' => 'decimal:2',
             'status' => 'boolean',
         ];
     }

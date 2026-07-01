@@ -64,10 +64,33 @@ class GroupsRelationManager extends RelationManager
                 DatePicker::make('end_date')
                     ->label('End Date'),
 
-                TextInput::make('payment_method')
-                    ->label('Payment Method')
+                ToggleButtons::make('payment_method')
+                    ->label('Ödəniş üsulu')
+                    ->options([
+                        1 => 'Birdəfəlik',
+                        2 => 'Aylıq',
+                    ])
+                    ->default(1)
+                    ->inline()
                     ->required()
-                    ->integer(),
+                    ->reactive()
+                    ->afterStateUpdated(function (callable $set, $state) {
+                        if ($state === 1) {
+                            $set('monthly_amount', null);
+                        } else {
+                            $set('fixed_amount', null);
+                        }
+                    }),
+                TextInput::make('fixed_amount')
+                    ->label('Birdəfəlik məbləğ (AZN)')
+                    ->numeric()
+                    ->visible(fn($get) => $get('payment_method') === 1)
+                    ->required(fn($get) => $get('payment_method') === 1),
+                TextInput::make('monthly_amount')
+                    ->label('Aylıq məbləğ (AZN)')
+                    ->numeric()
+                    ->visible(fn($get) => $get('payment_method') === 2)
+                    ->required(fn($get) => $get('payment_method') === 2),
 
                 Checkbox::make('status')
                     ->label('Status'),
@@ -110,10 +133,18 @@ class GroupsRelationManager extends RelationManager
                     ->dateTime(),
 
                 TextEntry::make('payment_method')
-                    ->label('Payment Method'),
+                    ->label('Ödəniş üsulu')
+                    ->getStateUsing(fn($state) => $state === 1 ? 'Birdəfəlik' : 'Aylıq'),
+
+                TextEntry::make('amount')
+                    ->label('Məbləğ (AZN)')
+                    ->getStateUsing(fn($record) => $record->payment_method === 1 ? $record->fixed_amount : $record->monthly_amount)
+                    ->money('AZN'),
 
                 TextEntry::make('status')
-                    ->label('Status'),
+                    ->label('Aktivlik')
+                    ->badge()
+                    ->getStateUsing(fn($state) => $state ? 'Aktiv' : 'Passiv'),
 
                 TextEntry::make('created_at')
                     ->label('Created Date')
@@ -161,10 +192,19 @@ class GroupsRelationManager extends RelationManager
                     ->date(),
 
                 TextColumn::make('payment_method')
-                    ->label('Payment Method'),
+                    ->label('Ödəniş üsulu')
+                    ->getStateUsing(fn($record) => $record->payment_method === 1 ? 'Birdəfəlik' : 'Aylıq'),
+
+                TextColumn::make('amount')
+                    ->label('Məbləğ (AZN)')
+                    ->getStateUsing(fn($record) => $record->payment_method === 1 ? $record->fixed_amount : $record->monthly_amount)
+                    ->money('AZN'),
 
                 TextColumn::make('status')
-                    ->label('Status'),
+                    ->label('Aktivlik')
+                    ->getStateUsing(fn($record) => $record->status ? 'Aktiv' : 'Passiv')
+                    ->badge()
+                    ->color(fn(string $state) => $state === 'Aktiv' ? 'success' : 'danger'),
             ])
             ->filters([
                 TrashedFilter::make(),

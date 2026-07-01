@@ -62,7 +62,18 @@ class GroupForm
                             ->inline()
                             ->required()
                             ->reactive()
-                            ->afterStateUpdated(fn(callable $set, $state) => $state === 1 ? $set('monthly_amount', null) : null),
+                                ->afterStateUpdated(function (callable $set, $state) {
+                                    if ($state === 1) {
+                                        $set('monthly_amount', null);
+                                    } else {
+                                        $set('fixed_amount', null);
+                                    }
+                                }),
+                        TextInput::make('fixed_amount')
+                            ->label('Birdəfəlik məbləğ (AZN)')
+                            ->numeric()
+                            ->visible(fn($get) => $get('payment_method') === 1)
+                            ->required(fn($get) => $get('payment_method') === 1),
                         TextInput::make('monthly_amount')
                             ->label('Aylıq məbləğ (AZN)')
                             ->numeric()
