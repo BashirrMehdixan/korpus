@@ -21,11 +21,22 @@ class TeacherResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $slug = 'teachers';
-    protected static ?string $label = 'Müəllim';
-    protected static ?string $navigationLabel = 'Müəllimlər';
-    protected static ?string $pluralLabel = 'Müəllim';
-
     protected static string|BackedEnum|null $navigationIcon = Phosphor::ChalkboardDuotone;
+    
+    public static function getLabel(): ?string
+    {
+        return __('main.teacher');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('main.teachers');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('main.teachers');
+    }
 
     public static function form(Schema $schema): Schema
     {

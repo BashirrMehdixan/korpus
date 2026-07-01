@@ -21,10 +21,22 @@ class StudentResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $slug = 'students';
-    protected static ?string $label = 'Tələbə';
-    protected static ?string $navigationLabel = 'Tələbələr';
-    protected static ?string $pluralLabel = 'Tələbə';
     protected static string|BackedEnum|null $navigationIcon = Phosphor::StudentDuotone;
+
+    public static function getLabel(): ?string
+    {
+        return __('main.student');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('main.students');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('main.students');
+    }
 
     public static function form(Schema $schema): Schema
     {

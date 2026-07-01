@@ -25,11 +25,20 @@ class PaymentResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCurrencyDollar;
 
-    protected static ?string $navigationLabel = 'Ödənişlər';
+    public static function getLabel(): ?string
+    {
+        return __('main.payment');
+    }
 
-    protected static ?string $modelLabel = 'Ödəniş';
+    public static function getPluralLabel(): ?string
+    {
+        return __('main.payments');
+    }
 
-    protected static ?string $pluralModelLabel = 'Ödənişlər';
+    public static function getNavigationLabel(): string
+    {
+        return __('main.payments');
+    }
 
     public static function form(Schema $schema): Schema
     {

@@ -9,5 +9,7 @@ return [
     'course' => 'Kurs',
     'courses' => 'Kurslar',
     'payment' => 'Ödəniş',
-    'payments' => 'Ödənişlər'
+    'payments' => 'Ödənişlər',
+    'user' => 'İstifadəçi',
+    'users' => 'İstifadəçilər',
 ];

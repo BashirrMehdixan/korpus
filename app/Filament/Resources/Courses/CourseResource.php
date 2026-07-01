@@ -25,11 +25,20 @@ class CourseResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
 
-    protected static ?string $navigationLabel = 'Kurslar';
+    public static function getLabel(): ?string
+    {
+        return __('main.course');
+    }
 
-    protected static ?string $modelLabel = 'Kurs';
+    public static function getPluralLabel(): ?string
+    {
+        return __('main.courses');
+    }
 
-    protected static ?string $pluralModelLabel = 'Kurslar';
+    public static function getNavigationLabel(): string
+    {
+        return __('main.courses');
+    }
 
     public static function form(Schema $schema): Schema
     {

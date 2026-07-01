@@ -19,11 +19,22 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $slug = 'users';
-    protected static ?string $label = 'İstifadəçi';
-    protected static ?string $navigationLabel = 'İstifadəçilər';
-    protected static ?string $pluralLabel = 'İstifadəçi';
-
     protected static string|BackedEnum|null $navigationIcon = Phosphor::UsersDuotone;
+
+    public static function getLabel(): ?string
+    {
+        return __('main.user');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('main.users');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('main.users');
+    }
 
     public static function form(Schema $schema): Schema
     {

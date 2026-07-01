@@ -25,11 +25,20 @@ class GroupResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
-    protected static ?string $navigationLabel = 'Qruplar';
+    public static function getLabel(): ?string
+    {
+        return __('main.group');
+    }
 
-    protected static ?string $modelLabel = 'Qrup';
+    public static function getPluralLabel(): ?string
+    {
+        return __('main.groups');
+    }
 
-    protected static ?string $pluralModelLabel = 'Qruplar';
+    public static function getNavigationLabel(): string
+    {
+        return __('main.groups');
+    }
 
     public static function form(Schema $schema): Schema
     {
