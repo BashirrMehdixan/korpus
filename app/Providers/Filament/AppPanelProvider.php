@@ -15,6 +15,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
+use Filament\Tables\Table;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -22,6 +23,8 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Prunacatalin\FilamentLocaleSwitcher\Http\Middleware\ApplyLocale;
+use Prunacatalin\FilamentLocaleSwitcher\LocaleSwitchPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -69,7 +72,8 @@ class AppPanelProvider extends PanelProvider
                         }
                     )
                     ->globallySearchable(false),
-                PhosphorIcons::make()
+                PhosphorIcons::make(),
+                LocaleSwitchPlugin::make()
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
@@ -86,7 +90,11 @@ class AppPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                ApplyLocale::class
             ])->bootUsing(function (Panel $panel) {
+                Table::configureUsing(function (Table $table) {
+                    $table->defaultSort('created_at', 'desc');
+                });
                 CreateAction::configureUsing(function (CreateAction $createAction) {
                     $createAction->icon(Phosphor::PlusCircleDuotone)
                         ->color('success')

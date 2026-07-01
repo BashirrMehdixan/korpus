@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\ActiveStudents\Schemas;
+namespace App\Filament\Resources\Students\Schemas;
 
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;

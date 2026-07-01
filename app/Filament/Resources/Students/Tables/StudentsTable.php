@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Students\Tables;
 
-use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -21,14 +20,38 @@ class StudentsTable
     {
         return $table
             ->columns([
-                TextColumn::make('index')->label('№')->rowIndex(),
-                TextColumn::make('surname')->label('S.A.A')
-                    ->getStateUsing(fn(User $record) => "$record->surname $record->name $record->patronymic")
-                    ->searchable(['surname', 'name', 'patronymic']),
-                TextColumn::make('phone')->label('Əlaqə nömrəsi'),
-                TextColumn::make('email')->label('E-poçt'),
-                TextColumn::make('registration_date')->label('Qeydiyyat tarixi')->dateTime(),
-                TextColumn::make('groups_count')->label('Qrupların sayı')->counts('groups'),
+                TextColumn::make('name')
+                    ->label('Name')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('email_verified_at')
+                    ->label('Email Verified Date')
+                    ->date(),
+
+                TextColumn::make('surname')
+                    ->label('Surname'),
+
+                TextColumn::make('patronymic')
+                    ->label('Patronymic'),
+
+                TextColumn::make('phone')
+                    ->label('Phone'),
+
+                TextColumn::make('registration_date')
+                    ->label('Registration Date')
+                    ->date(),
+
+                TextColumn::make('status')
+                    ->label('Status'),
+
+                TextColumn::make('username')
+                    ->label('Username'),
             ])
             ->filters([
                 TrashedFilter::make(),

@@ -4,12 +4,11 @@ namespace App\Filament\Resources\Groups\Schemas;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Str;
 
 class GroupForm
 {
@@ -26,15 +25,7 @@ class GroupForm
                             ->label('Ad')
                             ->required()
                             ->maxLength(255)
-                            ->live(onBlur: true)
-                            ->afterStateUpdate(fn(string $operation, $state, $set) => $operation === 'create'
-                                ? $set('slug', Str::slug($state))
-                                : null),
-                        TextInput::make('slug')
-                            ->label('Slug')
-                            ->required()
-                            ->unique(ignoreRecord: true)
-                            ->maxLength(255),
+                            ->live(onBlur: true),
                         Select::make('course_id')
                             ->label('Kurs')
                             ->relationship('course', 'name')

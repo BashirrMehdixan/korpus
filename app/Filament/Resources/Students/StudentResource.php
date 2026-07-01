@@ -2,14 +2,16 @@
 
 namespace App\Filament\Resources\Students;
 
+use App\Filament\Resources\Students\RelationManagers\GroupsRelationManager;
+use App\Filament\Resources\Students\RelationManagers\PaymentsRelationManager;
 use App\Filament\Resources\Users\Schemas\UserForm;
 use App\Filament\Resources\Users\Schemas\UserInfolist;
 use App\Filament\Resources\Users\Tables\UsersTable;
 use App\Models\User;
 use BackedEnum;
+use Filafly\Icons\Phosphor\Enums\Phosphor;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -17,10 +19,12 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class StudentResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $navigationLabel = 'Tələbələr';
-    protected static ?string $slug = 'students';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
+    protected static ?string $slug = 'students';
+    protected static ?string $label = 'Tələbə';
+    protected static ?string $navigationLabel = 'Tələbələr';
+    protected static ?string $pluralLabel = 'Tələbə';
+    protected static string|BackedEnum|null $navigationIcon = Phosphor::StudentDuotone;
 
     public static function form(Schema $schema): Schema
     {
@@ -37,6 +41,14 @@ class StudentResource extends Resource
         return UsersTable::table($table);
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            GroupsRelationManager::class,
+            PaymentsRelationManager::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
@@ -49,6 +61,7 @@ class StudentResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
+            ->role('student')
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
@@ -56,6 +69,6 @@ class StudentResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return [];
+        return ['name', 'email'];
     }
 }

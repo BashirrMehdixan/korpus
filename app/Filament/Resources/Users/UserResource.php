@@ -7,9 +7,9 @@ use App\Filament\Resources\Users\Schemas\UserInfolist;
 use App\Filament\Resources\Users\Tables\UsersTable;
 use App\Models\User;
 use BackedEnum;
+use Filafly\Icons\Phosphor\Enums\Phosphor;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -19,8 +19,11 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $slug = 'users';
+    protected static ?string $label = 'İstifadəçi';
+    protected static ?string $navigationLabel = 'İstifadəçilər';
+    protected static ?string $pluralLabel = 'İstifadəçi';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Phosphor::UsersDuotone;
 
     public static function form(Schema $schema): Schema
     {
