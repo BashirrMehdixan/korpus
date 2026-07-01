@@ -2,6 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Filafly\Icons\Phosphor\Enums\Phosphor;
+use Filafly\Icons\Phosphor\PhosphorIcons;
+use Filament\Actions\CreateAction;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -10,6 +14,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Width;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -30,10 +35,41 @@ class AppPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->maxContentWidth(Width::Full)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
+            ])
+            ->plugins([
+                FilamentShieldPlugin::make()
+                    ->gridColumns([
+                        'default' => 1,
+                        'sm' => 2,
+                        'lg' => 4,
+                    ])
+                    ->sectionColumnSpan(1)
+                    ->checkboxListColumns([
+                        'default' => 1,
+                        'sm' => 2,
+                        'lg' => 4,
+                    ])
+                    ->resourceCheckboxListColumns([
+                        'default' => 1,
+                        'sm' => 2,
+                    ])
+                    ->navigationIcon('heroicon-o-home')
+                    ->registerNavigation(
+                        function () {
+                            if (auth()->user()->fin === 'AGENT07' || auth()->user()->fin === 'AGENT01') {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
+                    )
+                    ->globallySearchable(false),
+                PhosphorIcons::make()
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
@@ -50,7 +86,18 @@ class AppPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-            ])
+            ])->bootUsing(function (Panel $panel) {
+                CreateAction::configureUsing(function (CreateAction $createAction) {
+                    $createAction->icon(Phosphor::PlusCircleDuotone)
+                        ->color('success')
+                        ->hiddenLabel()
+                        ->button()
+                        ->extraAttributes([
+                            'class' => 'rounded-3xl',
+                        ])
+                        ->tooltip('Yenisini yaratmaq');
+                });
+            })
             ->globalSearch(false)
             ->authMiddleware([
                 Authenticate::class,

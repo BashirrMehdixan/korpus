@@ -51,23 +51,21 @@ class UserForm
                                 ->dehydrated(fn($state) => filled($state))
                                 ->required(fn(string $context) => $context === 'create')
                                 ->maxLength(255),
+                            Select::make('roles')
+                                ->label('Rollar')
+                                ->relationship('roles', 'name')
+                                ->multiple()
+                                ->preload(),
                             DateTimePicker::make('registration_date')
                                 ->label('Qeydiyyat tarixi')
                                 ->default(now()),
                             ToggleButtons::make('status')
                                 ->label('Aktivlik')
                                 ->boolean()
+                                ->grouped()
                                 ->default(true)
                                 ->inline(),
-                        ]),
-                    Section::make('Rol və icazələr')
-                        ->schema([
-                            Select::make('roles')
-                                ->label('Rollar')
-                                ->relationship('roles', 'name')
-                                ->multiple()
-                                ->preload(),
-                        ]),
+                        ])->columnSpanFull(),
                 ])->columnSpanFull()
             ]);
     }
