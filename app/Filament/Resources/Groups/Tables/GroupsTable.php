@@ -23,12 +23,12 @@ class GroupsTable
             ->columns([
                 TextColumn::make('index')->label('№')->rowIndex(),
                 TextColumn::make('name')->label('Ad')->searchable(),
-                TextColumn::make('slug')->label('Slug')->searchable(),
                 TextColumn::make('course.name')->label('Kurs')->searchable(),
                 TextColumn::make('teacher.surname')->label('Müəllim')
-                    ->getStateUsing(fn(Group $record) => "$record->teacher->surname $record->teacher->name"),
-                TextColumn::make('start_date')->label('Başlama tarixi')->date(),
-                TextColumn::make('end_date')->label('Bitmə tarixi')->date(),
+                    ->getStateUsing(fn(Group $record) => $record->teacher->surname . ' ' . $record->teacher->name),
+                TextColumn::make('start_date')->label('Başlama tarixi və bitmə tarixi')->getStateUsing(function (Group $record) {
+                    return $record->start_date->toFormattedDateString() . ' - ' . $record->end_date->toFormattedDateString();
+                }),
                 TextColumn::make('payment_method')->label('Ödəniş üsulu')
                     ->getStateUsing(fn(Group $record) => $record->payment_method === 1 ? 'Birdəfəlik' : 'Aylıq'),
                 TextColumn::make('status')
@@ -36,6 +36,8 @@ class GroupsTable
                     ->getStateUsing(fn(Group $record) => $record->status ? 'Aktiv' : 'Passiv')
                     ->badge()
                     ->color(fn(string $state) => $state === 'Aktiv' ? 'success' : 'danger'),
+                TextColumn::make('created_at')->label('Yaradılma tarixi')->dateTime(),
+                TextColumn::make('creator.name')->label('Əlavə edən şəxs')->getStateUsing(fn(Group $record) => $record->creator->name . ' ' . $record->creator->surname),
             ])
             ->filters([
                 TrashedFilter::make(),

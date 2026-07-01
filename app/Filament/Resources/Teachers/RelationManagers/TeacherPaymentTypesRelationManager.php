@@ -42,6 +42,14 @@ class TeacherPaymentTypesRelationManager extends RelationManager
                     ->required()
                     ->reactive()
                     ->afterStateUpdated(fn(callable $set) => $set('amount', null)),
+                ToggleButtons::make('payment_method')
+                    ->label('Ödəniş metodu')
+                    ->options([
+                        1 => 'Birdəfəlik',
+                        2 => 'Aylıq',
+                    ])
+                    ->inline()
+                    ->nullable(),
                 TextInput::make('amount')
                     ->label('Məbləğ')
                     ->numeric()
@@ -78,6 +86,13 @@ class TeacherPaymentTypesRelationManager extends RelationManager
                         3 => 'Faiz dərəcəsi',
                         default => 'Bilinmir',
                     }),
+                TextEntry::make('payment_method')
+                    ->label('Ödəniş metodu')
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        1 => 'Birdəfəlik',
+                        2 => 'Aylıq',
+                        default => 'Təyin edilməyib',
+                    }),
                 TextEntry::make('amount')
                     ->label('Məbləğ'),
                 TextEntry::make('percentage')
@@ -102,6 +117,13 @@ class TeacherPaymentTypesRelationManager extends RelationManager
                         2 => 'Şagird sayına görə',
                         3 => 'Faiz dərəcəsi',
                         default => 'Bilinmir',
+                    }),
+                TextColumn::make('payment_method')
+                    ->label('Ödəniş metodu')
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        1 => 'Birdəfəlik',
+                        2 => 'Aylıq',
+                        default => '-',
                     }),
                 TextColumn::make('amount')
                     ->label('Məbləğ'),

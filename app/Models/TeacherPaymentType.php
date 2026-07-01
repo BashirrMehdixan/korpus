@@ -15,6 +15,7 @@ class TeacherPaymentType extends Model
     protected $fillable = [
         'teacher_id',
         'type',
+        'payment_method',
         'amount',
         'percentage',
         'group_id',
@@ -25,6 +26,7 @@ class TeacherPaymentType extends Model
     {
         return [
             'type' => 'integer',
+            'payment_method' => 'integer',
             'amount' => 'decimal:2',
             'percentage' => 'decimal:2',
             'status' => 'boolean',

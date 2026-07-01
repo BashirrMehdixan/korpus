@@ -129,6 +129,8 @@ class GroupsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('name')
+            ->defaultSort('groups.created_at', 'desc')
+            ->defaultKeySort(false)
             ->columns([
                 TextColumn::make('name')
                     ->label('Name')

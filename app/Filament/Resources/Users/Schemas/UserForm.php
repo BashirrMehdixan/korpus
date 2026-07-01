@@ -9,6 +9,7 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserForm
 {
@@ -53,7 +54,14 @@ class UserForm
                                 ->maxLength(255),
                             Select::make('roles')
                                 ->label('Rollar')
-                                ->relationship('roles', 'name')
+                                ->relationship(
+                                    name: 'roles',
+                                    titleAttribute: 'name',
+                                    // Baza sorğusunu süzgəcləyirik:
+                                    modifyQueryUsing: fn(Builder $query) => auth()->user()->hasRole('super_admin')
+                                        ? $query
+                                        : $query->where('name', '!=', 'super_admin')
+                                )
                                 ->multiple()
                                 ->preload(),
                             DateTimePicker::make('registration_date')

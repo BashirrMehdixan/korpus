@@ -51,14 +51,22 @@ class UserResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
+        $query = parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+        if (!auth()->user()?->hasRole('super_admin')) {
+            $query->whereDoesntHave('roles', function (Builder $q) {
+                $q->where('name', 'super_admin');
+            });
+        }
+        return $query;
     }
 
     public static function getGloballySearchableAttributes(): array
     {
         return [];
     }
+
+
 }

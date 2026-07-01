@@ -19,16 +19,6 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles, Userstamps, SoftDeletes;
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'registration_date' => 'datetime',
-            'status' => 'boolean'
-        ];
-    }
-
     public function groupsTeaching(): HasMany
     {
         return $this->hasMany(Group::class, 'teacher_id');
@@ -46,8 +36,23 @@ class User extends Authenticatable
         return $this->hasMany(Payment::class, 'student_id');
     }
 
+    public function getFullNameCustomAttribute(): string
+    {
+        return "{$this->surname} {$this->name}";
+    }
+
     public function teacherPaymentTypes(): HasMany
     {
         return $this->hasMany(TeacherPaymentType::class, 'teacher_id');
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'registration_date' => 'datetime',
+            'status' => 'boolean'
+        ];
     }
 }

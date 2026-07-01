@@ -60,7 +60,14 @@ class GroupForm
                             ])
                             ->default(1)
                             ->inline()
-                            ->required(),
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(fn(callable $set, $state) => $state === 1 ? $set('monthly_amount', null) : null),
+                        TextInput::make('monthly_amount')
+                            ->label('Aylıq məbləğ (AZN)')
+                            ->numeric()
+                            ->visible(fn($get) => $get('payment_method') === 2)
+                            ->required(fn($get) => $get('payment_method') === 2),
                         ToggleButtons::make('status')
                             ->label('Aktivlik')
                             ->boolean()

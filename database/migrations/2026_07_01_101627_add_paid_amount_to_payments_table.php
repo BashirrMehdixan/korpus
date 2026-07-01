@@ -1,0 +1,26 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('payments', function (Blueprint $table) {
+            $table->decimal('paid_amount', 10, 2)->nullable()->after('amount');
+            $table->date('paid_at')->nullable()->change();
+            $table->string('status')->default('pending')->change();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('payments', function (Blueprint $table) {
+            $table->dropColumn('paid_amount');
+            $table->date('paid_at')->nullable(false)->change();
+            $table->string('status')->default('paid')->change();
+        });
+    }
+};

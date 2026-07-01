@@ -16,7 +16,9 @@ class Payment extends Model
         'group_id',
         'student_id',
         'amount',
+        'paid_amount',
         'paid_at',
+        'due_date',
         'month',
         'year',
         'status',
@@ -27,7 +29,9 @@ class Payment extends Model
     {
         return [
             'amount' => 'decimal:2',
+            'paid_amount' => 'decimal:2',
             'paid_at' => 'date',
+            'due_date' => 'date',
             'month' => 'integer',
             'year' => 'integer',
         ];

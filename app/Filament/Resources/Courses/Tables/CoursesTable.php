@@ -23,7 +23,6 @@ class CoursesTable
             ->columns([
                 TextColumn::make('index')->label('№')->rowIndex(),
                 TextColumn::make('name')->label('Ad')->searchable(),
-                TextColumn::make('slug')->label('Slug')->searchable(),
                 TextColumn::make('description')->label('Təsvir')->limit(50),
                 TextColumn::make('status')
                     ->label('Aktivlik')
@@ -31,6 +30,8 @@ class CoursesTable
                     ->badge()
                     ->color(fn(string $state) => $state === 'Aktiv' ? 'success' : 'danger'),
                 TextColumn::make('created_at')->label('Yaradılma tarixi')->dateTime(),
+                TextColumn::make('creator.name')->label('Əlavə edən şəxs')->getStateUsing(fn(Course $record) => $record->creator->name . ' ' . $record->creator->surname),
+
             ])
             ->filters([
                 TrashedFilter::make(),
