@@ -10,12 +10,13 @@ use App\Filament\Resources\Courses\Schemas\CourseInfolist;
 use App\Filament\Resources\Courses\Tables\CoursesTable;
 use App\Models\Course;
 use BackedEnum;
+use Filafly\Icons\Phosphor\Enums\Phosphor;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use UnitEnum;
 
 class CourseResource extends Resource
 {
@@ -23,7 +24,7 @@ class CourseResource extends Resource
 
     protected static ?string $slug = 'courses';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
+    protected static string|BackedEnum|null $navigationIcon = Phosphor::GraduationCapDuotone;
 
     public static function getLabel(): ?string
     {
@@ -38,6 +39,11 @@ class CourseResource extends Resource
     public static function getNavigationLabel(): string
     {
         return __('main.courses');
+    }
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('main.education');
     }
 
     public static function form(Schema $schema): Schema

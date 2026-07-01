@@ -10,11 +10,13 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -37,6 +39,18 @@ class AppPanelProvider extends PanelProvider
             ->login()
             ->colors([
                 'primary' => Color::Amber,
+            ])
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label(__('main.education'))
+                    ->icon(Phosphor::GraduationCapDuotone),
+                NavigationGroup::make()
+                    ->label('Blog')
+                    ->icon(Heroicon::OutlinedPencil),
+                NavigationGroup::make()
+                    ->label(fn(): string => __('navigation.settings'))
+                    ->icon(Heroicon::OutlinedCog6Tooth)
+                    ->collapsed(),
             ])
             ->maxContentWidth(Width::Full)
             ->sidebarCollapsibleOnDesktop()

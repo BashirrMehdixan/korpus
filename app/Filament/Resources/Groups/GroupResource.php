@@ -16,6 +16,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use UnitEnum;
 
 class GroupResource extends Resource
 {
@@ -38,6 +39,11 @@ class GroupResource extends Resource
     public static function getNavigationLabel(): string
     {
         return __('main.groups');
+    }
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('main.education');
     }
 
     public static function form(Schema $schema): Schema

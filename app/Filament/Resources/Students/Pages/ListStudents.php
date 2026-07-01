@@ -14,11 +14,11 @@ class ListStudents extends ListRecords
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make('Bütün Tələbələr'),
-            'active' => Tab::make('Aktiv Tələbələr')
+            'all' => Tab::make(__('main.students')),
+            'active' => Tab::make(__('main.active_students'))
                 ->modifyQueryUsing(fn($query) => $query->where('status', true)),
-            'archived' => Tab::make('Çıxmış Tələbələr')
-                ->modifyQueryUsing(fn($query) => $query->where('status', false)), // və ya SoftDeletes ilə ->onlyTrashed()
+            'archived' => Tab::make(__('main.exit_students'))
+                ->modifyQueryUsing(fn($query) => $query->where('status', false)),
         ];
     }
 

@@ -26,17 +26,21 @@ class UsersTable
                     ->label('#')
                     ->rowIndex(),
                 TextColumn::make('surname')
-                    ->label('S.A.A')
+                    ->label(__('main.full_name'))
                     ->getStateUsing(fn(User $record) => "$record->surname $record->name $record->patronymic")
                     ->searchable(['surname', 'name', 'patronymic']),
-                TextColumn::make('username')->label('İstifadəçi adı')->searchable(),
-                TextColumn::make('phone')->label('Əlaqə nömrəsi')->searchable(),
-                TextColumn::make('email')->label('E-poçt')->searchable(),
-                TextColumn::make('roles.name')->label('Rol adı')->searchable(),
-                TextColumn::make('registration_date')->label('Qeydiyyat tarixi')
+                TextColumn::make('username')
+                    ->label(__('main.username'))
+                    ->searchable(),
+                TextColumn::make('phone')
+                    ->label(__('main.phone'))
+                    ->searchable(),
+                TextColumn::make('email')->label(__('main.email'))->searchable(),
+                TextColumn::make('roles.name')->label(__('main.role'))->searchable(),
+                TextColumn::make('registration_date')->label(__('main.registration_date'))
                     ->sortable()->dateTime(),
                 TextColumn::make('status')
-                    ->label('Aktivlik')
+                    ->label(__('main.status'))
                     ->getStateUsing(fn(User $record) => $record->status ? 'Aktiv' : 'Passiv')
                     ->badge()
                     ->color(fn(string $state) => $state === 'Aktiv' ? 'success' : 'danger')->sortable(),
