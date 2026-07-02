@@ -7,8 +7,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\Section;
 
 class PaymentForm
 {
@@ -17,6 +17,7 @@ class PaymentForm
         return $schema
             ->components([
                 Section::make('Ödəniş məlumatları')
+                    ->columnSpanFull()
                     ->columns(2)
                     ->schema([
                         Select::make('group_id')
@@ -24,6 +25,7 @@ class PaymentForm
                             ->relationship('group', 'name')
                             ->required()
                             ->preload()
+                            ->disabled()
                             ->searchable(),
                         Select::make('student_id')
                             ->label('Tələbə')
@@ -31,6 +33,7 @@ class PaymentForm
                             ->getOptionLabelFromRecordUsing(fn($record) => "$record->surname $record->name $record->patronymic")
                             ->required()
                             ->preload()
+                            ->disabled()
                             ->searchable(),
                         TextInput::make('amount')
                             ->label('Məbləğ')
@@ -41,30 +44,6 @@ class PaymentForm
                             ->label('Ödəniş tarixi')
                             ->required()
                             ->default(now()),
-                        Select::make('month')
-                            ->label('Ay')
-                            ->options([
-                                1 => 'Yanvar', 2 => 'Fevral', 3 => 'Mart',
-                                4 => 'Aprel', 5 => 'May', 6 => 'İyun',
-                                7 => 'İyul', 8 => 'Avqust', 9 => 'Sentyabr',
-                                10 => 'Oktyabr', 11 => 'Noyabr', 12 => 'Dekabr',
-                            ])
-                            ->required(),
-                        Select::make('year')
-                            ->label('İl')
-                            ->options(fn() => collect(range(now()->year - 5, now()->year + 1))
-                                ->mapWithKeys(fn($year) => [$year => $year]))
-                            ->required()
-                            ->default(now()->year),
-                        ToggleButtons::make('status')
-                            ->label('Status')
-                            ->options([
-                                'paid' => 'Ödənildi',
-                                'pending' => 'Gözləyir',
-                            ])
-                            ->default('paid')
-                            ->inline()
-                            ->required(),
                         Textarea::make('note')
                             ->label('Qeyd')
                             ->rows(3)

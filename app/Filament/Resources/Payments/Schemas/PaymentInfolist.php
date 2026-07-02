@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources\Payments\Schemas;
 
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
-
+use Filament\Schemas\Components\Section;
 class PaymentInfolist
 {
     public static function configure(Schema $schema): Schema

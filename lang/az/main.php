@@ -27,4 +27,17 @@ return [
     'status' => 'Aktivlik',
     'created_at' => 'Yaradılma tarixi',
     'created_by' => 'Əlavə edən şəxs',
+
+    // payment table
+    'price' => 'Məbləğ',
+    'payment_date' => 'Ödəniş tarixi',
+    'month' => 'Ay',
+    'year' => 'İl',
+    'pending' => 'Gözləmədə',
+    'due_date' => 'Ödənilməlidir',
+    'partial' => 'Qismən ödənilib',
+    'overdue' => 'Gecikmiş',
+    'paid' => 'Ödənilib',
+    'unpaid' => 'Ödənilməyib',
+    'paid_amount' => 'Ödənilməli məbləğ'
 ];

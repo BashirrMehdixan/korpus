@@ -1,5 +1,6 @@
 <?php
 return [
+    // Navigation
     'student' => 'Student',
     'students' => 'Students',
     'active_students' => 'Active students',
@@ -17,7 +18,7 @@ return [
     'users' => 'Users',
 
     // users table
-    'full_name' => 'S.N.P',
+    'full_name' => 'Fullname',
     'username' => 'Username',
     'phone' => 'Phone',
     'email' => 'E-mail',
@@ -26,4 +27,17 @@ return [
     'status' => 'Status',
     'created_at' => 'Created at',
     'created_by' => 'Creator',
+
+    // payment table
+    'price' => 'Price',
+    'payment_date' => 'Payment date',
+    'month' => 'Month',
+    'year' => 'Year',
+    'pending' => 'Pending',
+    'due_date' => 'Due date',
+    'partial' => 'Partial',
+    'overdue' => 'Overdue',
+    'paid' => 'Paid',
+    'unpaid' => 'Unpaid',
+    'paid_amount' => 'Paid amount'
 ];

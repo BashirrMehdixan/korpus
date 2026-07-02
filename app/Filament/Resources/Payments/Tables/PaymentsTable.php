@@ -4,6 +4,9 @@ namespace App\Filament\Resources\Payments\Tables;
 
 use App\Models\Payment;
 use App\Models\User;
+use App\Services\FilamentActionsService;
+use Carbon\Carbon;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -12,6 +15,9 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
@@ -23,19 +29,47 @@ class PaymentsTable
     {
         return $table
             ->columns([
-                TextColumn::make('index')->label('№')->rowIndex(),
-                TextColumn::make('group.name')->label('Qrup')->searchable(),
-                TextColumn::make('student.surname')
-                    ->label('Tələbə')
-                    ->getStateUsing(fn(Payment $record) => $record->student->getFullNameCustomAttribute()),
-                TextColumn::make('amount')->label('Məbləğ')->money('AZN'),
-                TextColumn::make('paid_at')->label('Ödəniş tarixi')->date(),
-                TextColumn::make('month')->label('Ay'),
-                TextColumn::make('year')->label('İl'),
+                TextColumn::make('group.name')
+                    ->label(__('main.group')),
+                TextColumn::make('amount')
+                    ->label(__('main.price'))
+                    ->money('AZN'),
+                TextColumn::make('paid_amount')
+                    ->label(__('main.paid_amount'))
+                    ->money('AZN')
+                    ->placeholder('-'),
+                TextColumn::make('paid_at')
+                    ->label(__('main.payment_date'))
+                    ->date()
+                    ->placeholder(__('main.unpaid')),
+                TextColumn::make('due_date')
+                    ->label(__('main.due_date'))
+                    ->date()
+                    ->color(fn($state, $record) => $record->status !== 'paid' && $record->due_date && $record->due_date->isPast() ? 'danger' : null),
                 TextColumn::make('status')
-                    ->label('Status')
+                    ->label(__('main.status'))
                     ->badge()
-                    ->color(fn(string $state) => $state === 'paid' ? 'success' : 'warning'),
+                    ->formatStateUsing(function ($state, $record) {
+                        if ($state === 'paid') return __('main.paid');
+
+                        if ($record->due_date && $record->due_date->isPast()) return __('main.overdue');
+
+                        return match ($state) {
+                            'pending' => __('main.pending'),
+                            'partial' => __('main.partial'),
+                            default => $state,
+                        };
+                    })
+                    ->color(function ($state, $record) {
+                        if ($record->status === 'paid') return 'success';
+
+                        if ($record->due_date && $record->due_date->isPast()) return 'danger';
+
+                        return match ($record->status) {
+                            'partial' => 'info',
+                            default => 'warning',
+                        };
+                    }),
             ])->defaultSort('due_date')
             ->filters([
                 TrashedFilter::make()->native(false),
@@ -50,7 +84,8 @@ class PaymentsTable
                     ->native(false),
             ])
             ->recordActions([
-                EditAction::make(),
+//                EditAction::make(),
+            FilamentActionsService::payMonthlyAmount(),
                 DeleteAction::make(),
                 RestoreAction::make(),
                 ForceDeleteAction::make(),

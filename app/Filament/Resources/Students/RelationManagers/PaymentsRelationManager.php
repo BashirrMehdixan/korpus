@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Students\RelationManagers;
 
 use App\Models\Payment;
+use App\Services\FilamentActionsService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -14,6 +15,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -34,55 +36,40 @@ class PaymentsRelationManager extends RelationManager
             })
             ->columns([
                 TextColumn::make('group.name')
-                    ->label('Qrup'),
-                TextColumn::make('month')
-                    ->label('Ay')
-                    ->formatStateUsing(fn($state) => $state ? Carbon::create()->month($state)->translatedFormat('F') : 'Birdəfəlik')
-                    ->visible(fn($record) => $record?->month !== null || !$record),
-                TextColumn::make('year')
-                    ->label('İl')
-                    ->visible(fn($record) => $record?->year !== null || !$record),
+                    ->label(__('main.group')),
                 TextColumn::make('amount')
-                    ->label('Məbləğ (AZN)')
+                    ->label(__('main.price'))
                     ->money('AZN'),
                 TextColumn::make('paid_amount')
-                    ->label('Ödənilən')
+                    ->label(__('main.paid_amount'))
                     ->money('AZN')
                     ->placeholder('-'),
                 TextColumn::make('paid_at')
-                    ->label('Ödəniş tarixi')
+                    ->label(__('main.payment_date'))
                     ->date()
-                    ->placeholder('Ödənilməyib'),
+                    ->placeholder(__('main.unpaid')),
                 TextColumn::make('due_date')
-                    ->label('Son ödəniş tarixi')
+                    ->label(__('main.due_date'))
                     ->date()
                     ->color(fn($state, $record) => $record->status !== 'paid' && $record->due_date && $record->due_date->isPast() ? 'danger' : null),
                 TextColumn::make('status')
-                    ->label('Status')
+                    ->label(__('main.status'))
                     ->badge()
                     ->formatStateUsing(function ($state, $record) {
-                        if ($state === 'paid') {
-                            return 'Ödənildi';
-                        }
+                        if ($state === 'paid') return __('main.paid');
 
-                        if ($record->due_date && $record->due_date->isPast()) {
-                            return 'Gecikmiş';
-                        }
+                        if ($record->due_date && $record->due_date->isPast()) return __('main.overdue');
 
                         return match ($state) {
-                            'pending' => 'Gözləmədə',
-                            'partial' => 'Qismən',
+                            'pending' => __('main.pending'),
+                            'partial' => __('main.partial'),
                             default => $state,
                         };
                     })
                     ->color(function ($state, $record) {
-                        if ($record->status === 'paid') {
-                            return 'success';
-                        }
+                        if ($record->status === 'paid') return 'success';
 
-                        if ($record->due_date && $record->due_date->isPast()) {
-                            return 'danger';
-                        }
+                        if ($record->due_date && $record->due_date->isPast()) return 'danger';
 
                         return match ($record->status) {
                             'partial' => 'info',
@@ -93,107 +80,15 @@ class PaymentsRelationManager extends RelationManager
             ->defaultSort('due_date', 'desc')
             ->defaultKeySort(false)
             ->filters([
-                TrashedFilter::make(),
+                TrashedFilter::make()->native(false),
+                SelectFilter::make('status')->options([
+                    'pending' => __('main.pending'),
+                    'partial' => __('main.partial'),
+                    'paid' => __('main.paid'),
+                ])->native(false)
             ])
             ->recordActions([
-                Action::make('pay')
-                    ->label('Ödəniş et')
-                    ->icon('heroicon-o-banknotes')
-                    ->color('success')
-                    ->visible(function (Payment $record): bool {
-                        if ($record->status === 'paid') {
-                            return false;
-                        }
-
-                        return !Payment::where('student_id', $record->student_id)
-                            ->where('group_id', $record->group_id)
-                            ->where('status', '!=', 'paid')
-                            ->where('id', '!=', $record->id)
-                            ->where(function ($q) use ($record) {
-                                if ($record->month !== null && $record->year !== null) {
-                                    $q->where('year', '<', $record->year)
-                                        ->orWhere(function ($q) use ($record) {
-                                            $q->where('year', '=', $record->year)
-                                                ->where('month', '<', $record->month);
-                                        });
-                                } else {
-                                    $q->where('due_date', '<', $record->due_date)
-                                        ->orWhereNull('due_date');
-                                }
-                            })
-                            ->exists();
-                    })
-                    ->form([
-                        TextInput::make('paid_amount')
-                            ->label('Ödənilən məbləğ (AZN)')
-                            ->numeric()
-                            ->required()
-                            ->minValue(0),
-                        DatePicker::make('paid_at')
-                            ->label('Ödəniş tarixi')
-                            ->required()
-                            ->default(now()),
-                    ])
-                    ->action(function (Payment $record, array $data) {
-                        $paidAmount = $data['paid_amount'];
-                        $paidAt = $data['paid_at'];
-                        $remaining = $paidAmount;
-
-                        $pendingPayments = Payment::where('student_id', $record->student_id)
-                            ->where('group_id', $record->group_id)
-                            ->whereIn('status', ['pending', 'partial'])
-                            ->where(function ($q) use ($record) {
-                                if ($record->month !== null && $record->year !== null) {
-                                    $q->where('year', '>', $record->year)
-                                        ->orWhere(function ($q) use ($record) {
-                                            $q->where('year', '=', $record->year)
-                                                ->where('month', '>=', $record->month);
-                                        });
-                                } else {
-                                    $q->whereNull('month');
-                                }
-                            })
-                            ->orderBy('year')
-                            ->orderBy('month')
-                            ->get();
-
-                        foreach ($pendingPayments as $payment) {
-                            if ($remaining <= 0) {
-                                break;
-                            }
-
-                            $due = $payment->amount - ($payment->paid_amount ?? 0);
-
-                            if ($remaining >= $due) {
-                                $payment->update([
-                                    'paid_amount' => $payment->amount,
-                                    'paid_at' => $paidAt,
-                                    'status' => 'paid',
-                                ]);
-                                $remaining -= $due;
-                            } else {
-                                $newPaid = ($payment->paid_amount ?? 0) + $remaining;
-                                $payment->update([
-                                    'paid_amount' => $newPaid,
-                                    'paid_at' => $paidAt,
-                                    'status' => $newPaid >= $payment->amount ? 'paid' : 'partial',
-                                ]);
-                                $remaining = 0;
-                            }
-                        }
-
-                        if ($remaining > 0) {
-                            Notification::make()
-                                ->warning()
-                                ->title("$remaining AZN artıq ödəniş növbəti aylara köçürüldü")
-                                ->send();
-                        }
-
-                        Notification::make()
-                            ->success()
-                            ->title('Ödəniş qeydə alındı')
-                            ->send();
-                    }),
+                FilamentActionsService::payMonthlyAmount()
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
