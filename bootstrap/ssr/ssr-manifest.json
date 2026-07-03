@@ -1,0 +1,33 @@
+{
+  "node_modules/.pnpm/notivue@2.4.5/node_modules/notivue/dist/Notifications/notifications.css": [],
+  "node_modules/.pnpm/notivue@2.4.5/node_modules/notivue/dist/core/animations.css": [],
+  "resources/js/app.ts": [],
+  "resources/js/components/layouts/header.vue": [],
+  "resources/js/components/layouts/header.vue?vue&type=script&setup=true&lang.ts": [],
+  "resources/js/components/layouts/sidebar.vue": [],
+  "resources/js/components/layouts/sidebar.vue?vue&type=script&setup=true&lang.ts": [],
+  "resources/js/composables/useDarkMode.ts": [],
+  "resources/js/composables/useLocale.ts": [
+    "/build/assets/useLocale-DzvATyP9.js"
+  ],
+  "resources/js/layouts/default.vue": [],
+  "resources/js/layouts/default.vue?vue&type=script&setup=true&lang.ts": [],
+  "resources/js/pages/index.vue": [
+    "/build/assets/pages-DS_GpRTf.js"
+  ],
+  "resources/js/pages/index.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/pages-DS_GpRTf.js"
+  ],
+  "resources/js/pages/menu/create.vue": [
+    "/build/assets/create-BGvKjZ_Y.js"
+  ],
+  "resources/js/pages/menu/create.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/create-BGvKjZ_Y.js"
+  ],
+  "resources/js/pages/menu/index.vue": [
+    "/build/assets/menu-oZY-Dzmr.js"
+  ],
+  "resources/js/pages/menu/index.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/menu-oZY-Dzmr.js"
+  ]
+}

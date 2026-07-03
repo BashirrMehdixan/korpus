@@ -77,15 +77,7 @@ class AppPanelProvider extends PanelProvider
                         'sm' => 2,
                     ])
                     ->navigationIcon('heroicon-o-home')
-                    ->registerNavigation(
-                        function () {
-                            if (auth()->user()->fin === 'AGENT07' || auth()->user()->fin === 'AGENT01') {
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        }
-                    )
+                    ->registerNavigation(fn() => auth()->user()->hasRole('super_admin'))
                     ->globallySearchable(false),
                 PhosphorIcons::make(),
                 LocaleSwitchPlugin::make()
