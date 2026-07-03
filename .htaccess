@@ -2,7 +2,7 @@
 
     RewriteEngine On
 
-    RewriteRule ^(.*)$ /$1 [L]
+    RewriteRule ^(.*)$ public/$1 [L]
 
 </IfModule>
 
@@ -14,4 +14,4 @@
 
 Header always set Content-Security-Policy: upgrade-insecure-requests
 
-ErrorDocument 405 /405.html
+ErrorDocument 405 /public/405.html
