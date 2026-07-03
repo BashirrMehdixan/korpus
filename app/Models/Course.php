@@ -14,7 +14,7 @@ class Course extends Model
 {
     use HasUuids, Userstamps, SoftDeletes, HasTranslations, Sluggable;
 
-    public $translatable = ['name', 'description'];
+    public array $translatable = ['name', 'description'];
 
     protected $fillable = [
         'name',
@@ -27,7 +27,7 @@ class Course extends Model
     {
         return [
             'slug' => [
-                'source' => 'name'
+                'source' => 'name.az'
             ]
         ];
     }

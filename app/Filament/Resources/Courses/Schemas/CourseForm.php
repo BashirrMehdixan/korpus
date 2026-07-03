@@ -17,39 +17,41 @@ class CourseForm
             ->components([
                 Fieldset::make()
                     ->columnSpanFull()
-                    ->columns(3)
+                    ->columns()
                     ->schema([
                         Section::make('AZ')
                             ->columnSpan(1)
+//                            ->translatable()
                             ->schema([
-                                TextInput::make('name_az')
-                                    ->label('Ad')
+                                TextInput::make('name.az')
+                                    ->label(__('main.name'))
                                     ->required()
                                     ->live(onBlur: true),
-                                Textarea::make('description_az')
-                                    ->label('Təsvir')
+                                Textarea::make('description.az')
+                                    ->label(__('main.description'))
                                     ->rows(5),
                             ]),
-                        Section::make('EN')
-                            ->columnSpan(1)
-                            ->schema([
-                                TextInput::make('name_en')
-                                    ->label('Name'),
-                                Textarea::make('description_en')
-                                    ->label('Description')
-                                    ->rows(5),
-                            ]),
-                        Section::make('RU')
-                            ->columnSpan(1)
-                            ->schema([
-                                TextInput::make('name_ru')
-                                    ->label('Название'),
-                                Textarea::make('description_ru')
-                                    ->label('Описание')
-                                    ->rows(5),
-                            ]),
+//                        Section::make('EN')
+//                            ->columnSpan(1)
+//                            ->schema([
+//                                TextInput::make('name.en')
+//                                    ->required()
+//                                    ->label('Name'),
+//                                Textarea::make('description.en')
+//                                    ->label(__('main.description'))
+//                                    ->rows(5),
+//                            ]),
+//                        Section::make('RU')
+//                            ->columnSpan(1)
+//                            ->schema([
+//                                TextInput::make('name.ru')
+//                                    ->label('Название'),
+//                                Textarea::make('description_ru')
+//                                    ->label('Описание')
+//                                    ->rows(5),
+//                            ]),
                         ToggleButtons::make('status')
-                            ->label('Aktivlik')
+                            ->label(__('main.status'))
                             ->boolean()
                             ->grouped()
                             ->default(true)

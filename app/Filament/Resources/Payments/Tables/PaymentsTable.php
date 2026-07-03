@@ -2,22 +2,15 @@
 
 namespace App\Filament\Resources\Payments\Tables;
 
-use App\Models\Payment;
 use App\Models\User;
 use App\Services\FilamentActionsService;
-use Carbon\Carbon;
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
@@ -74,7 +67,7 @@ class PaymentsTable
             ->filters([
                 TrashedFilter::make()->native(false),
                 SelectFilter::make('student_id')
-                    ->label('Tələbə')
+                    ->label(__('main.student'))
                     ->options(fn() => User::whereHas('payments')
                         ->get()
                         ->pluck('full_name_custom', 'id')
@@ -85,7 +78,7 @@ class PaymentsTable
             ])
             ->recordActions([
 //                EditAction::make(),
-            FilamentActionsService::payMonthlyAmount(),
+                FilamentActionsService::payMonthlyAmount(),
                 DeleteAction::make(),
                 RestoreAction::make(),
                 ForceDeleteAction::make(),

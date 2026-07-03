@@ -22,25 +22,27 @@ class GroupsTable
         return $table
             ->columns([
                 TextColumn::make('index')->label('№')->rowIndex(),
-                TextColumn::make('name')->label('Ad')->searchable(),
-                TextColumn::make('course.name')->label('Kurs')->searchable(),
-                TextColumn::make('teacher.surname')->label('Müəllim')
+                TextColumn::make('name')
+                    ->label(__('main.name'))->searchable(),
+                TextColumn::make('course.name')
+                    ->label(__('main.course'))->searchable(),
+                TextColumn::make('teacher.surname')->label(__('main.teacher'))
                     ->getStateUsing(fn(Group $record) => $record->teacher->surname . ' ' . $record->teacher->name),
-                TextColumn::make('start_date')->label('Başlama tarixi və bitmə tarixi')->getStateUsing(function (Group $record) {
-                    return $record->start_date->toFormattedDateString() . ' - ' . $record->end_date->toFormattedDateString();
-                }),
-                TextColumn::make('payment_method')->label('Ödəniş üsulu')
+                TextColumn::make('start_date')
+                    ->label(__('main.start_and_end_date'))
+                    ->getStateUsing(fn(Group $record) => $record->start_date->toFormattedDateString() . ' - ' . $record->end_date->toFormattedDateString()),
+                TextColumn::make('payment_method')->label(__('main.payment_method'))
                     ->getStateUsing(fn(Group $record) => $record->payment_method === 1 ? 'Birdəfəlik' : 'Aylıq'),
-                TextColumn::make('amount')->label('Məbləğ (AZN)')
+                TextColumn::make('amount')->label(__('main.amount'))
                     ->getStateUsing(fn(Group $record) => $record->payment_method === 1 ? $record->fixed_amount : $record->monthly_amount)
                     ->money('AZN'),
                 TextColumn::make('status')
-                    ->label('Aktivlik')
-                    ->getStateUsing(fn(Group $record) => $record->status ? 'Aktiv' : 'Passiv')
+                    ->label(__('main.status'))
+                    ->getStateUsing(fn(Group $record) => $record->status ? __('main.active') : __('main.disable'))
                     ->badge()
-                    ->color(fn(string $state) => $state === 'Aktiv' ? 'success' : 'danger'),
-                TextColumn::make('created_at')->label('Yaradılma tarixi')->dateTime(),
-                TextColumn::make('creator.name')->label('Əlavə edən şəxs')->getStateUsing(fn(Group $record) => $record->creator->name . ' ' . $record->creator->surname),
+                    ->color(fn(string $record) => $record->status ? 'success' : 'danger'),
+                TextColumn::make('created_at')->label(__('main.created_at'))->dateTime(),
+                TextColumn::make('creator.name')->label(__('main.created_by'))->getStateUsing(fn(Group $record) => $record->creator->name . ' ' . $record->creator->surname),
             ])
             ->filters([
                 TrashedFilter::make(),

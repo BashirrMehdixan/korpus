@@ -16,15 +16,22 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use UnitEnum;
 
 class CourseResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = Course::class;
 
     protected static ?string $slug = 'courses';
-
     protected static string|BackedEnum|null $navigationIcon = Phosphor::GraduationCapDuotone;
+
+    public static function getTranslatableLocales(): array
+    {
+        return ['az', 'en'];
+    }
 
     public static function getLabel(): ?string
     {

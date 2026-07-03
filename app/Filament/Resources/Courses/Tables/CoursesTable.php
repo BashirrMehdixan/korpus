@@ -22,15 +22,15 @@ class CoursesTable
         return $table
             ->columns([
                 TextColumn::make('index')->label('№')->rowIndex(),
-                TextColumn::make('name')->label('Ad')->searchable(),
-                TextColumn::make('description')->label('Təsvir')->limit(50),
+                TextColumn::make('name')->label(__('main.name'))->searchable(),
+                TextColumn::make('description')->label(__('main.description'))->limit(50),
                 TextColumn::make('status')
-                    ->label('Aktivlik')
-                    ->getStateUsing(fn(Course $record) => $record->status ? 'Aktiv' : 'Passiv')
+                    ->label(__('main.status'))
+                    ->getStateUsing(fn(Course $record) => $record->status ? __('main.active') : __('main.disable'))
                     ->badge()
-                    ->color(fn(string $state) => $state === 'Aktiv' ? 'success' : 'danger'),
-                TextColumn::make('created_at')->label('Yaradılma tarixi')->dateTime(),
-                TextColumn::make('creator.name')->label('Əlavə edən şəxs')->getStateUsing(fn(Course $record) => $record->creator->name . ' ' . $record->creator->surname),
+                    ->color(fn(string $record) => $record->status ? 'success' : 'danger'),
+                TextColumn::make('created_at')->label(__('main.created_at'))->dateTime(),
+                TextColumn::make('creator.name')->label(__('main.created_by'))->getStateUsing(fn(Course $record) => $record->creator->name . ' ' . $record->creator->surname),
 
             ])
             ->filters([

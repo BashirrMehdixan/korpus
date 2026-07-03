@@ -18,16 +18,17 @@ class GroupForm
 
         return $schema
             ->components([
-                Section::make('Qrup məlumatları')
-                    ->columns(2)
+                Section::make(__('main.group_info'))
+                    ->columns()
+                    ->columnSpan(2)
                     ->schema([
                         TextInput::make('name')
-                            ->label('Ad')
+                            ->label(__('main.name'))
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true),
                         Select::make('course_id')
-                            ->label('Kurs')
+                            ->label(__('main.course'))
                             ->relationship('course', 'name')
                             ->required()
                             ->preload()
@@ -39,7 +40,7 @@ class GroupForm
                             ]
                             : [
                                 Select::make('teacher_id')
-                                    ->label('Müəllim')
+                                    ->label(__('main.teacher'))
                                     ->relationship('teacher', 'surname')
                                     ->getOptionLabelFromRecordUsing(fn($record) => "$record->surname $record->name")
                                     ->required()
@@ -48,53 +49,47 @@ class GroupForm
                             ]
                         ),
                         DatePicker::make('start_date')
-                            ->label('Başlama tarixi')
+                            ->label(__('main.start_date'))
                             ->required(),
                         DatePicker::make('end_date')
-                            ->label('Bitmə tarixi'),
+                            ->label(__('main.end_date')),
                         ToggleButtons::make('payment_method')
-                            ->label('Ödəniş üsulu')
+                            ->label(__('main.payment_method'))
                             ->options([
-                                1 => 'Birdəfəlik',
-                                2 => 'Aylıq',
+                                1 => __('main.one_time'),
+                                2 => __('main.monthly'),
                             ])
                             ->default(1)
                             ->inline()
                             ->required()
                             ->reactive()
-                                ->afterStateUpdated(function (callable $set, $state) {
-                                    if ($state === 1) {
-                                        $set('monthly_amount', null);
-                                    } else {
-                                        $set('fixed_amount', null);
-                                    }
-                                }),
+                            ->afterStateUpdated(fn(callable $set, $state) => $state === 1 ? $set('monthly_amount', null) : $set('fixed_amount', null)),
                         TextInput::make('fixed_amount')
-                            ->label('Birdəfəlik məbləğ (AZN)')
+                            ->label(__('main.fixed_amount'))
                             ->numeric()
                             ->visible(fn($get) => $get('payment_method') === 1)
                             ->required(fn($get) => $get('payment_method') === 1),
                         TextInput::make('monthly_amount')
-                            ->label('Aylıq məbləğ (AZN)')
+                            ->label(__('main.monthly_amount'))
                             ->numeric()
                             ->visible(fn($get) => $get('payment_method') === 2)
                             ->required(fn($get) => $get('payment_method') === 2),
                         ToggleButtons::make('status')
-                            ->label('Aktivlik')
+                            ->label(__('main.status'))
                             ->boolean()
                             ->default(true)
                             ->inline(),
                     ]),
-                Section::make('Tələbələr')
+                Section::make(__('main.students'))
                     ->schema([
                         Select::make('students')
-                            ->label('Tələbələr')
+                            ->label(__('main.students'))
                             ->relationship('students', 'surname')
                             ->getOptionLabelFromRecordUsing(fn($record) => "$record->surname $record->name $record->patronymic")
                             ->multiple()
                             ->preload()
                             ->searchable(),
-                    ]),
-            ]);
+                    ])->columnSpan(1),
+            ])->columns(3);
     }
 }

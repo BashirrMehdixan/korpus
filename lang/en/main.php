@@ -39,5 +39,27 @@ return [
     'overdue' => 'Overdue',
     'paid' => 'Paid',
     'unpaid' => 'Unpaid',
-    'paid_amount' => 'Paid amount'
+    'paid_amount' => 'Paid amount',
+
+    // Courses table
+    'name' => 'Name',
+    'description' => 'Description',
+
+    // Groups table
+    'start_and_end_date' => 'Start and end date',
+    'payment_method' => 'Payment method',
+    'amount' => 'Amount',
+
+    // General
+    'active' => 'Active',
+    'disable' => 'Disable',
+    'payment_info' => 'Payment information',
+    'group_info' => 'Group information',
+    'note' => 'Note',
+    'start_date' => 'Start date',
+    'end_date' => 'End date',
+    'one_time' => 'One time',
+    'monthly' => 'Monthly',
+    'fixed_amount' => 'Fixed amount',
+    'monthly_amount' => 'Monthly amount',
 ];

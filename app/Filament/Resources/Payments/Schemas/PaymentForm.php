@@ -6,7 +6,6 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -16,19 +15,19 @@ class PaymentForm
     {
         return $schema
             ->components([
-                Section::make('Ödəniş məlumatları')
+                Section::make(__('main.payment_info'))
                     ->columnSpanFull()
-                    ->columns(2)
+                    ->columns()
                     ->schema([
                         Select::make('group_id')
-                            ->label('Qrup')
+                            ->label(__('main.group'))
                             ->relationship('group', 'name')
                             ->required()
                             ->preload()
                             ->disabled()
                             ->searchable(),
                         Select::make('student_id')
-                            ->label('Tələbə')
+                            ->label(__('main.student'))
                             ->relationship('student', 'surname')
                             ->getOptionLabelFromRecordUsing(fn($record) => "$record->surname $record->name $record->patronymic")
                             ->required()
@@ -36,16 +35,16 @@ class PaymentForm
                             ->disabled()
                             ->searchable(),
                         TextInput::make('amount')
-                            ->label('Məbləğ')
+                            ->label(__('main.amount'))
                             ->required()
                             ->numeric()
                             ->prefix('AZN'),
                         DatePicker::make('paid_at')
-                            ->label('Ödəniş tarixi')
+                            ->label(__('main.payment_date'))
                             ->required()
                             ->default(now()),
                         Textarea::make('note')
-                            ->label('Qeyd')
+                            ->label(__('main.note'))
                             ->rows(3)
                             ->columnSpanFull(),
                     ]),

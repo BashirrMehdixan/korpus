@@ -35,7 +35,7 @@ class GroupsRelationManager extends RelationManager
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label('Name')
+                    ->label(__('main.name'))
                     ->required()
                     ->reactive()
                     ->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),

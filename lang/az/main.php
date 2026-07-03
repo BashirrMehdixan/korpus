@@ -39,5 +39,27 @@ return [
     'overdue' => 'Gecikmiş',
     'paid' => 'Ödənilib',
     'unpaid' => 'Ödənilməyib',
-    'paid_amount' => 'Ödənilməli məbləğ'
+    'paid_amount' => 'Ödənilməli məbləğ',
+
+    // Courses table
+    'name' => 'Ad',
+    'description' => 'Təsvir',
+
+    // Groups table
+    'start_and_end_date' => 'Başlama və bitmə tarixi',
+    'payment_method' => 'Ödəniş üsulu',
+    'amount' => 'Məbləğ',
+
+    // General
+    'active' => 'Active',
+    'disable' => 'Disable',
+    'payment_info' => 'Ödəniş məlumatları',
+    'group_info' => 'Qrup məlumatları',
+    'note' => 'Qeyd',
+    'start_date' => 'Başlama tarixi',
+    'end_date' => 'Bitmə tarixi',
+    'one_time' => 'Birdəfəlik',
+    'monthly' => 'Aylıq',
+    'fixed_amount' => 'Birdəfəlik məbləğ',
+    'monthly_amount' => 'Aylıq məbləğ',
 ];

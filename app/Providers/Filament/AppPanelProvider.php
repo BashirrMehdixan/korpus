@@ -25,6 +25,8 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use LaraZeus\SpatieTranslatable\SpatieTranslatablePlugin;
+use Outerweb\FilamentTranslatableFields\TranslatableFieldsPlugin;
 use Prunacatalin\FilamentLocaleSwitcher\Http\Middleware\ApplyLocale;
 use Prunacatalin\FilamentLocaleSwitcher\LocaleSwitchPlugin;
 
@@ -60,6 +62,9 @@ class AppPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->plugins([
+                SpatieTranslatablePlugin::make()
+                    ->defaultLocales(['az', 'en']),
+//                TranslatableFieldsPlugin::make()->supportedLocales(['az', 'en']),
                 FilamentShieldPlugin::make()
                     ->gridColumns([
                         'default' => 1,
