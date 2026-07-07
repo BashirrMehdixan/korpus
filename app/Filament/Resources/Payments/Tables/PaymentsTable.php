@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Payments\Tables;
 
+use App\Models\Group;
+use App\Models\Payment;
 use App\Models\User;
 use App\Services\FilamentActionsService;
 use Filament\Actions\BulkActionGroup;
@@ -12,6 +14,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -24,6 +27,11 @@ class PaymentsTable
             ->columns([
                 TextColumn::make('group.name')
                     ->label(__('main.group')),
+                TextColumn::make('student_id')
+                    ->label(__('main.student'))
+                    ->getStateUsing(fn(Payment $record) => $record->student->full_name_custom)
+                    ->sortable()
+                    ->searchable(['name', 'surname', 'patronymic']),
                 TextColumn::make('amount')
                     ->label(__('main.price'))
                     ->money('AZN'),
@@ -75,7 +83,17 @@ class PaymentsTable
                     ->searchable()
                     ->preload()
                     ->native(false),
+                SelectFilter::make('group_id')
+                    ->label(__('main.group'))
+                    ->options(fn() => Group::whereHas('payments')
+                        ->get()
+                        ->pluck('name', 'id')
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->native(false),
             ])
+            ->filtersLayout(FiltersLayout::AboveContent)
             ->recordActions([
 //                EditAction::make(),
                 FilamentActionsService::payMonthlyAmount(),

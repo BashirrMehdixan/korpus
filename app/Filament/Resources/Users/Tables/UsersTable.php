@@ -12,6 +12,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -46,13 +47,14 @@ class UsersTable
                     ->color(fn(string $state) => $state === 'Aktiv' ? 'success' : 'danger')->sortable(),
             ])
             ->filters([
-                TrashedFilter::make(),
+                TrashedFilter::make()->native(false)->preload(),
                 SelectFilter::make('roles')
                     ->relationship('roles', 'name')
                     ->multiple()
                     ->native(false)
                     ->preload(),
             ])
+            ->filtersLayout(FiltersLayout::AboveContent)
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),

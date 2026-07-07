@@ -12,6 +12,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -40,13 +41,14 @@ class GroupsTable
                     ->label(__('main.status'))
                     ->getStateUsing(fn(Group $record) => $record->status ? __('main.active') : __('main.disable'))
                     ->badge()
-                    ->color(fn(string $record) => $record->status ? 'success' : 'danger'),
+                    ->color(fn(Group $record) => $record->status ? 'success' : 'danger'),
                 TextColumn::make('created_at')->label(__('main.created_at'))->dateTime(),
                 TextColumn::make('creator.name')->label(__('main.created_by'))->getStateUsing(fn(Group $record) => $record->creator->name . ' ' . $record->creator->surname),
             ])
             ->filters([
-                TrashedFilter::make(),
+                TrashedFilter::make()->native(false),
             ])
+            ->filtersLayout(FiltersLayout::AboveContent)
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),

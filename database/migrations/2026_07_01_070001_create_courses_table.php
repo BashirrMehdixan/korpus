@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->json('name');
             $table->string('slug')->unique();
-            $table->text('description')->nullable();
+            $table->json('description')->nullable();
             $table->boolean('status')->default(true);
             $table->softDeletes();
             $table->userstamps();

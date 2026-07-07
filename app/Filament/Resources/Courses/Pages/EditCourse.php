@@ -20,34 +20,4 @@ class EditCourse extends EditRecord
             RestoreAction::make(),
         ];
     }
-
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        $record = $this->getRecord();
-
-        foreach (['az', 'en', 'ru'] as $locale) {
-            $data["name_{$locale}"] = $record->getTranslation('name', $locale, false);
-            $data["description_{$locale}"] = $record->getTranslation('description', $locale, false);
-        }
-
-        return $data;
-    }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        $data['name'] = [];
-        $data['description'] = [];
-
-        foreach (['az', 'en', 'ru'] as $locale) {
-            if ($name = $data["name_{$locale}"] ?? null) {
-                $data['name'][$locale] = $name;
-            }
-            if (isset($data["description_{$locale}"])) {
-                $data['description'][$locale] = $data["description_{$locale}"];
-            }
-            unset($data["name_{$locale}"], $data["description_{$locale}"]);
-        }
-
-        return $data;
-    }
 }

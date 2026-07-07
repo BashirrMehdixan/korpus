@@ -40,7 +40,7 @@ class StudentResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return UserForm::configure($schema);
+        return UserForm::configure($schema, defaultRole: 'student');
     }
 
     public static function infolist(Schema $schema): Schema

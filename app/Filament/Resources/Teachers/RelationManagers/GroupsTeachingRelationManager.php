@@ -186,6 +186,7 @@ class GroupsTeachingRelationManager extends RelationManager
             ->filters([
                 TrashedFilter::make(),
             ])
+            ->filtersLayout(\Filament\Tables\Enums\FiltersLayout::AboveContent)
             ->headerActions([
                 CreateAction::make(),
             ])

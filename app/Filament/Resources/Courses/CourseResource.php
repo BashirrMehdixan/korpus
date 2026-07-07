@@ -16,12 +16,12 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
+use Spatie\Translatable\HasTranslations;
 use UnitEnum;
 
 class CourseResource extends Resource
 {
-    use Translatable;
+    use HasTranslations;
 
     protected static ?string $model = Course::class;
 

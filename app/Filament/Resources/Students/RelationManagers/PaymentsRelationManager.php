@@ -87,6 +87,7 @@ class PaymentsRelationManager extends RelationManager
                     'paid' => __('main.paid'),
                 ])->native(false)
             ])
+            ->filtersLayout(\Filament\Tables\Enums\FiltersLayout::AboveContent)
             ->recordActions([
                 FilamentActionsService::payMonthlyAmount()
             ])

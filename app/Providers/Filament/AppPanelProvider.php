@@ -62,9 +62,6 @@ class AppPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->plugins([
-                SpatieTranslatablePlugin::make()
-                    ->defaultLocales(['az', 'en']),
-//                TranslatableFieldsPlugin::make()->supportedLocales(['az', 'en']),
                 FilamentShieldPlugin::make()
                     ->gridColumns([
                         'default' => 1,

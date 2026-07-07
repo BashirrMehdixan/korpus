@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
-use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Spatie\Translatable\HasTranslations;
 
 class Course extends Model
 {
-    use HasUuids, Userstamps, SoftDeletes, HasTranslations, Sluggable;
+    use HasUuids, Userstamps, SoftDeletes, HasTranslations;
 
     public array $translatable = ['name', 'description'];
 
@@ -23,13 +23,15 @@ class Course extends Model
         'status',
     ];
 
-    public function sluggable(): array
+    protected static function boot(): void
     {
-        return [
-            'slug' => [
-                'source' => 'name.az'
-            ]
-        ];
+        parent::boot();
+
+        static::creating(function (self $course) {
+            if (!$course->slug) {
+                $course->slug = Str::slug($course->getTranslations('name')['az'] ?? '');
+            }
+        });
     }
 
     public function groups(): HasMany
@@ -41,6 +43,7 @@ class Course extends Model
     {
         return [
             'name' => 'json',
+            'description' => 'json',
             'status' => 'boolean',
         ];
     }

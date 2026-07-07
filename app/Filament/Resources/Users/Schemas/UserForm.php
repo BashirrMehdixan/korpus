@@ -10,11 +10,15 @@ use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\Permission\Models\Role;
 
 class UserForm
 {
-    public static function configure(Schema $schema): Schema
+    public static function configure(Schema $schema, ?string $defaultRole = null): Schema
     {
+        $defaultRoleIds = $defaultRole
+            ? [Role::where('name', $defaultRole)->value('id')]
+            : [];
         return $schema
             ->components([
                 Fieldset::make()->schema([
@@ -63,7 +67,8 @@ class UserForm
                                         : $query->where('name', '!=', 'super_admin')
                                 )
                                 ->multiple()
-                                ->preload(),
+                                ->preload()
+                                ->default($defaultRoleIds),
                             DateTimePicker::make('registration_date')
                                 ->label('Qeydiyyat tarixi')
                                 ->default(now()),
