@@ -43,7 +43,8 @@ class PaymentsRelationManager extends RelationManager
                     ->numeric(),
 
                 DatePicker::make('paid_at')
-                    ->label('Paid Date'),
+                    ->label('Paid Date')
+                    ->required(),
 
                 TextInput::make('month')
                     ->label('Month')

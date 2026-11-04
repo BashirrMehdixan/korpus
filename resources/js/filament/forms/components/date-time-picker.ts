@@ -1,8 +1,11 @@
 import { createApp, h, shallowRef } from 'vue'
 import DateTimePicker from './DateTimePicker.vue'
+import { ensureFilamentStyles } from './styles'
 import { normalizeProps, type JsRendererContext, type JsRendererInstance, type DateTimePickerProps } from './types'
 
 export default function mountDateTimePicker({ host, props: initialProps }: JsRendererContext): JsRendererInstance {
+    ensureFilamentStyles()
+
     const props = shallowRef<DateTimePickerProps>(normalizeProps<DateTimePickerProps>(initialProps))
 
     const application = createApp({

@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "ignoreDeprecations": "6.0",
         "target": "ESNext",
         "module": "ESNext",
         "moduleResolution": "bundler",
@@ -12,10 +13,21 @@
         "sourceMap": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["resources/js/*"]
+            "@/*": [
+                "resources/js/*"
+            ],
+            "@filament/schemas/js-component": [
+                "./vendor/filament/schemas/resources/js/types/js-component.d.ts"
+            ]
         },
-        "lib": ["ESNext", "DOM", "DOM.Iterable"],
-        "types": ["vite/client"]
+        "lib": [
+            "ESNext",
+            "DOM",
+            "DOM.Iterable"
+        ],
+        "types": [
+            "vite/client"
+        ]
     },
     "include": [
         "resources/js/**/*.ts",
@@ -26,4 +38,3 @@
         "public"
     ]
 }
-

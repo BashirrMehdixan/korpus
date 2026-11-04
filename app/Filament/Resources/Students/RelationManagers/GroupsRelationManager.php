@@ -60,7 +60,8 @@ class GroupsRelationManager extends RelationManager
                     ->required(),
 
                 DatePicker::make('start_date')
-                    ->label('Start Date'),
+                    ->label('Start Date')
+                    ->required(),
 
                 DatePicker::make('end_date')
                     ->label('End Date'),

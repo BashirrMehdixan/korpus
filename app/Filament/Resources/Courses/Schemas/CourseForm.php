@@ -48,6 +48,7 @@ class CourseForm
                         ->boolean()
                         ->grouped()
                         ->default(true)
+                        ->required()
                         ->columnSpanFull()
                         ->inline(),
                 ])->columns(3)->columnSpanFull(),

@@ -78,6 +78,7 @@ class GroupForm
                             ->label(__('main.status'))
                             ->boolean()
                             ->default(true)
+                            ->required()
                             ->inline(),
                     ]),
                 Section::make(__('main.students'))

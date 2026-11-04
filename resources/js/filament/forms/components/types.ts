@@ -11,6 +11,7 @@ export interface FieldProps {
     isInvalid: boolean
     ariaDescribedBy: string | null
     configuration?: Record<string, unknown>
+    default?: unknown
     onChange: (value: unknown) => void
     onBlur: () => void
     [key: string]: unknown

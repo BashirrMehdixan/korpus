@@ -63,6 +63,7 @@ class TeacherPaymentTypesRelationManager extends RelationManager
                     ->label('Aktivlik')
                     ->boolean()
                     ->inline()
+                    ->required()
                     ->default(true),
             ]);
     }

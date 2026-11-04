@@ -20,6 +20,7 @@ export default defineConfig({
                 'resources/js/filament/forms/components/date-picker.ts',
                 'resources/js/filament/forms/components/toggle-buttons.ts',
                 'resources/js/filament/forms/components/date-time-picker.ts',
+                'resources/js/filament/schemas/components/js-form.ts',
             ],
             refresh: true,
             fonts: [

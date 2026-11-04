@@ -1,9 +1,19 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import type { TextInputProps } from './types'
 
 defineOptions({ inheritAttrs: false })
 
 const props = defineProps<TextInputProps>()
+
+const isPasswordRevealed = ref(false)
+
+const computedType = computed(() => {
+    if (props.type === 'password') {
+        return isPasswordRevealed.value ? 'text' : 'password'
+    }
+    return props.type ?? 'text'
+})
 
 function handleInput(event: Event): void {
     let val: string | number | null = (event.target as HTMLInputElement).value
@@ -12,96 +22,46 @@ function handleInput(event: Event): void {
     }
     props.onChange(val)
 }
+
+function togglePassword(): void {
+    isPasswordRevealed.value = !isPasswordRevealed.value
+}
 </script>
 
 <template>
-    <div
-        class="custom-field-wrapper"
-        :class="{ 'is-invalid': props.isInvalid, 'is-disabled': props.isDisabled }"
-    >
-        <span v-if="props.prefix" class="field-affix field-prefix">{{ props.prefix }}</span>
-        <input
-            :id="props.id"
-            :type="props.type ?? 'text'"
-            :value="props.value ?? ''"
-            :disabled="props.isDisabled"
-            :readonly="props.isReadOnly"
-            :required="props.isRequired"
-            :aria-invalid="props.isInvalid"
-            :aria-describedby="props.ariaDescribedBy"
-            :placeholder="props.placeholder ?? ''"
-            :maxlength="props.maxLength ?? undefined"
-            :min="props.minValue ?? undefined"
-            :step="props.step ?? undefined"
-            class="custom-field-input"
-            @input="handleInput"
-            @blur="props.onBlur()"
-        />
-        <span v-if="props.suffix" class="field-affix field-suffix">{{ props.suffix }}</span>
+    <div class="fi-custom-field-wrp" :class="{ 'is-invalid': props.isInvalid, 'is-disabled': props.isDisabled }">
+        <span v-if="props.prefix" class="fi-custom-affix fi-custom-prefix">
+            {{ props.prefix }}
+        </span>
+
+        <input :id="props.id" :type="computedType" :value="props.value ?? props.default ?? ''"
+            :disabled="props.isDisabled" :readonly="props.isReadOnly" :required="props.isRequired"
+            :aria-invalid="props.isInvalid" :aria-describedby="props.ariaDescribedBy ?? undefined"
+            :placeholder="props.placeholder ?? ''" :maxlength="props.maxLength ?? undefined"
+            :min="props.minValue ?? undefined" :step="props.step ?? undefined" class="fi-custom-input"
+            @input="handleInput" @blur="props.onBlur()" />
+
+        <!-- Password Reveal Button -->
+        <button v-if="props.type === 'password'" type="button" class="fi-custom-icon-btn" tabindex="-1"
+            :title="isPasswordRevealed ? 'Şifrəni gizlət' : 'Şifrəni göstər'" @click="togglePassword">
+            <!-- Eye slash (gizlət) -->
+            <svg v-if="isPasswordRevealed" style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+            </svg>
+            <!-- Eye (göstər) -->
+            <svg v-else style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+        </button>
+
+        <span v-if="props.suffix" class="fi-custom-affix fi-custom-suffix">
+            {{ props.suffix }}
+        </span>
     </div>
 </template>
-
-<style scoped>
-.custom-field-wrapper {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    min-height: 2.375rem;
-    border-radius: 0.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background-color: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    transition: border-color 0.15s, box-shadow 0.15s;
-    overflow: hidden;
-}
-:root:not(.dark) .custom-field-wrapper {
-    border: 1px solid #d1d5db;
-    background-color: #ffffff;
-}
-.custom-field-wrapper:focus-within {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
-}
-.custom-field-wrapper.is-invalid {
-    border-color: #ef4444;
-}
-.custom-field-wrapper.is-disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-.field-affix {
-    padding: 0 0.75rem;
-    font-size: 0.875rem;
-    color: #9ca3af;
-    background-color: rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    user-select: none;
-}
-.field-prefix {
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-}
-.field-suffix {
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-}
-.custom-field-input {
-    flex: 1;
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    color: #ffffff;
-    background: transparent;
-    border: none;
-    outline: none;
-}
-:root:not(.dark) .custom-field-input {
-    color: #111827;
-}
-.custom-field-input::placeholder {
-    color: #6b7280;
-}
-.custom-field-input:disabled {
-    cursor: not-allowed;
-}
-</style>
