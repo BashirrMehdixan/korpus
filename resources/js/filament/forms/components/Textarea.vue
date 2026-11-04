@@ -1,0 +1,78 @@
+<script setup lang="ts">
+import type { TextareaProps } from './types'
+
+defineOptions({ inheritAttrs: false })
+
+const props = defineProps<TextareaProps>()
+</script>
+
+<template>
+    <div
+        class="custom-textarea-wrapper"
+        :class="{ 'is-invalid': props.isInvalid, 'is-disabled': props.isDisabled }"
+    >
+        <textarea
+            :id="props.id"
+            :value="props.value ?? ''"
+            :disabled="props.isDisabled"
+            :readonly="props.isReadOnly"
+            :required="props.isRequired"
+            :aria-invalid="props.isInvalid"
+            :aria-describedby="props.ariaDescribedBy"
+            :rows="props.rows ?? 3"
+            :placeholder="props.placeholder ?? ''"
+            :maxlength="props.maxLength ?? undefined"
+            class="custom-textarea"
+            @input="props.onChange(($event.target as HTMLTextAreaElement).value)"
+            @blur="props.onBlur()"
+        />
+    </div>
+</template>
+
+<style scoped>
+.custom-textarea-wrapper {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    overflow: hidden;
+}
+:root:not(.dark) .custom-textarea-wrapper {
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+}
+.custom-textarea-wrapper:focus-within {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+}
+.custom-textarea-wrapper.is-invalid {
+    border-color: #ef4444;
+}
+.custom-textarea-wrapper.is-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.custom-textarea {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #ffffff;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: vertical;
+}
+:root:not(.dark) .custom-textarea {
+    color: #111827;
+}
+.custom-textarea::placeholder {
+    color: #6b7280;
+}
+.custom-textarea:disabled {
+    cursor: not-allowed;
+}
+</style>

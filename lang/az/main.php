@@ -8,7 +8,7 @@ return [
     'group' => 'Qrup',
     'groups' => 'Qruplar',
     'teacher' => 'Müəllim',
-    'teachers' => 'Müəllimələr',
+    'teachers' => 'Müəllimlər',
     'education' => 'Tədris',
     'course' => 'Kurs',
     'courses' => 'Kurslar',
