@@ -90,3 +90,8 @@ export interface ToggleButtonsProps extends FieldProps {
     isBoolean?: boolean
     isMultiple?: boolean
 }
+
+// Checkbox extras
+export interface CheckboxProps extends FieldProps {
+    label?: string | null
+}

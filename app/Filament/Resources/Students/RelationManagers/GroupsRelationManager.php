@@ -16,7 +16,7 @@ use App\Filament\Forms\Components\DatePicker;
 use App\Filament\Forms\Components\Select;
 use App\Filament\Forms\Components\TextInput;
 use App\Filament\Forms\Components\ToggleButtons;
-use Filament\Forms\Components\Checkbox;
+use App\Filament\Forms\Components\Checkbox;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;

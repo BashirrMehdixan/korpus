@@ -2,15 +2,13 @@
 
 namespace App\Filament\Resources\Students\Schemas;
 
+use App\Filament\Resources\Users\Schemas\UserForm;
 use Filament\Schemas\Schema;
 
 class StudentForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-
-            ]);
+        return UserForm::configure($schema, defaultRole: 'student');
     }
 }
